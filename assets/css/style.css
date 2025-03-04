@@ -1,0 +1,188 @@
+/* Root Variables */
+:root {
+  --color-primary: #f8f8f8;
+  --color-secondary: #888;
+}
+
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
+/* Body */
+body {
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Header */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: var(--color-secondary);
+  color: white;
+  padding: 15px 0;
+  text-align: center;
+  z-index: 1000;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+nav ul li {
+  display: inline;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 10px;
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 200px;
+  background-color: var(--color-primary);
+  padding: 15px;
+  text-align: left;
+  position: fixed;
+  left: 0;
+  top: 60px; /* Below header */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h3 {
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  padding: 8px;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: var(--color-secondary);
+  display: flex;
+  align-items: center;
+}
+
+.sidebar a:hover {
+  text-decoration: underline;
+}
+
+.sidebar i {
+  font-size: 20px;
+  margin-right: 10px;
+  color: #333;
+}
+
+.sidebar a:hover i {
+  color: #0073b1;
+}
+
+/* Content */
+.content {
+  flex-grow: 1;
+  margin-left: 220px;
+  padding: 20px;
+  margin-top: 80px;
+}
+
+h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+p {
+  font-size: 18px;
+  color: #555;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  /* Header */
+  .header {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+  }
+
+  /* Sidebar adjusts below the header */
+  .sidebar {
+    position: fixed;
+    top: 60px; /* Keeps sidebar below header */
+    left: 0;
+    width: 100%;
+    height: auto;
+    background: #f4f4f4;
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    z-index: 999;
+  }
+
+  /* Sidebar links align horizontally */
+  .sidebar ul {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .sidebar ul li {
+    padding: 0;
+  }
+
+  /* Content shifts down below header + sidebar */
+  .content {
+    margin-left: 0;
+    margin-top: 160px; /* Adjust margin to ensure no overlap with header/sidebar */
+    padding: 15px;
+  }
+
+  /* Navigation bar in mobile */
+  nav ul {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px; /* Space between navigation items */
+    padding: 0;
+  }
+
+  nav ul li {
+    display: block; /* Ensures items are stacked vertically without overlapping */
+  }
+
+  /* Ensure the links are centered */
+  nav ul li a {
+    font-size: 18px;
+    padding: 10px;
+  }
+}
