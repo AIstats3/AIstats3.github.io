@@ -2,6 +2,8 @@
 :root {
   --color-primary: #f8f8f8;
   --color-secondary: #888;
+  --color-white: #FFFFFF;
+  --color-black: #222222;
 }
 
 /* General Reset */
@@ -27,7 +29,7 @@ body {
   left: 0;
   width: 100%;
   background: var(--color-secondary);
-  color: white;
+  color: var(--color-white);
   padding: 15px 0;
   text-align: center;
   z-index: 1000;
@@ -45,7 +47,7 @@ nav ul li {
 }
 
 nav ul li a {
-  color: white;
+  color: var(--color-white);
   text-decoration: none;
   font-size: 18px;
   padding: 10px;
@@ -115,14 +117,32 @@ nav ul li a:hover {
 }
 
 h1 {
-  font-size: 36px;
+  font-size: 48px;
   margin-bottom: 10px;
+  color:var(--color-secondary);
+}
+h2 {
+  font-size: 30px;
+  margin-bottom: 10px;
+  color:var(--color-secondary);
 }
 
 p {
-  font-size: 18px;
-  color: #555;
+  font-size: 22px;
+  color: var(--color-secondary);
+  margin-bottom: 29px;
 }
+.responsive-img {
+  width: 50%; /* Adjust percentage as needed */
+  height: auto; /* Maintains aspect ratio */
+  max-width: 300px; /* Prevents it from being too large */
+  display: block; /* Removes extra spacing below inline images */
+  margin: 0 auto; /* Centers the image */
+  border-radius: 2px; /* Optional: adds rounded corners */
+  float: right;
+  margin-left: 20px;
+}
+
 
 /* Responsive Design */
 @media screen and (max-width: 768px) {
@@ -142,7 +162,7 @@ p {
     left: 0;
     width: 100%;
     height: auto;
-    background: #f4f4f4;
+    background: var(--color-primary);
     padding: 20px;
     display: flex;
     flex-direction: row;
@@ -185,4 +205,12 @@ p {
     font-size: 18px;
     padding: 10px;
   }
+  .responsive-img {
+    width: 80%; /* Makes the image larger on smaller screens */
+    max-width: none; /* Remove the max width limit */
+    margin: 0, auto;
+    float: none;
+    display: block;
+  }
+
 }
