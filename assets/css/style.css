@@ -1,9 +1,10 @@
 /* Root Variables */
 :root {
-  --color-primary: #f8f8f8;
-  --color-secondary: #888;
+  --color-primary:#1f242c; 
+  --color-secondary: #cfcfcf;
   --color-white: #FFFFFF;
   --color-black: #222222;
+  --color-accent: orange;
 }
 
 /* General Reset */
@@ -28,11 +29,14 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  background: var(--color-secondary);
+  background: var(--color-primary);
   color: var(--color-white);
   padding: 15px 0;
   text-align: center;
   z-index: 1000;
+  border-bottom: var(--color-accent);
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
 }
 
 nav ul {
@@ -40,6 +44,7 @@ nav ul {
   display: flex;
   justify-content: center;
   gap: 20px;
+
 }
 
 nav ul li {
@@ -47,7 +52,7 @@ nav ul li {
 }
 
 nav ul li a {
-  color: var(--color-white);
+  color: var(--color-secondary );
   text-decoration: none;
   font-size: 18px;
   padding: 10px;
@@ -61,6 +66,7 @@ nav ul li a:hover {
 .sidebar {
   width: 134px;
   background-color: var(--color-primary);
+  color: var(--color-secondary);
   padding: 15px;
   text-align: left;
   position: fixed;
@@ -101,7 +107,7 @@ nav ul li a:hover {
 .sidebar i {
   font-size: 20px;
   margin-right: 10px;
-  color: #333;
+  color: var(--color-secondary);
 }
 
 .sidebar a:hover i {
@@ -119,7 +125,7 @@ nav ul li a:hover {
 h1 {
   font-size: 48px;
   margin-bottom: 10px;
-  color:var(--color-secondary);
+  color:var(--color-accent);
 }
 h2 {
   font-size: 30px;
