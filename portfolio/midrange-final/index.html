@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!--begin _includes/seo.html-->
+  <title>Portfolio - Nicholas LaMonica</title>
+  <meta name="description" content="Homepage for Nicholas Heichler LaMonica">
+  <meta name="author" content="Nicholas Heichler LaMonica">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Nicholas Heichler LaMonica">
+  <meta property="og:title" content="Portfolio">
+  <meta property="og:url" content="AIstats3.github.io/portfolio/">
+  <meta property="og:description" content="Homepage for Nicholas Heichler LaMonica">
+  <link rel="canonical" href="https://AIstats3.github.io/portfolio/midrange-final/">
+  <!--end _includes/seo.html-->
+
+  <!--Viewport include-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100..900&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+
+<body>
+  <header class="header">
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/portfolio/">Portfolio</a></li>
+        <li><a href="/blog/">Blog</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <aside class="sidebar">
+      <ul>
+        <li><a href="https://www.linkedin.com/in/nicholas-lamonica-962004172" target="_blank"><i
+              class="fab fa-linkedin"></i>LinkedIn</a></li>
+        <li><a href="https://github.com/AIstats3" target="_blank"><i class="fab fa-github"></i>Github</a></li>
+        <li><a href="mailto:nicklamonica2001@gmail.com" target="_blank"><i class="fas fa-envelope"></i>Email</a></li>
+        <li><a href="/assets/docs/resume.pdf" target="_blank"><i class="fas fa-file-pdf"></i>Resume</a></li>
+      </ul>
+    </aside>
+
+    <div class="content">
+      <h1>2>3: Applications of the Midrange Shot</h1>
+      <p>Completed as part of MAST 397 - Special Topics in Math & Stats: Sports Analytics - Joshua Wyatt Smith</p>
+      <a class="blog-link" href="https://github.com/AIstats3/NBA-Final">Github</a>
+      <h2>Introduction</h2>
+      <p>
+        In the modern-day NBA three point shots are the poster child of analytics. Teams like the Golden State Warriors
+        have utilized offenses which attempt high numbers of 3's to achieve success in the regular and postseason. The
+        trend has caught on league wide. Spurred by the chant “3 > 2” teams now jack up more 3's than ever and try their
+        other shots as close to the goal as possible. This change was spurred by simple statistics: why take a shot from
+        20 ft. when you can step back to 24 ft.. Both these shots have similar chances of going in, so the math tells
+        you to give yourself the chance at that extra point by shooting from behind the 3P line. This is a beautiful
+        application of math in sports, but nothing is gained without losing something else. In the case of the three
+        pointer revolution, what was lost was the mid range shot. My project will be aimed at determining what the value
+        of a mid range shot is in today's post-three-point-revolution NBA.
+      </p>
+      <h2>Literature Review</h2>
+      <p>
+        The mid range shot did not die slowly, and the three point revolution did not happen overnight. However, the
+        point remains: the 2017-18 Houston Rockets became the first team in NBA history to shoot more 3's than 2's (3470
+        and 3436 respectively) (Freitas). That inequality was not reached spontaneously. In fact “the only statistically
+        significant change between two consecutive seasons in the statistics analyzed” by Freitas “was the 3PTA for
+        seasons 1985-86 (0.76 to 1.05, adjusted p=0.0732)” (Freitas). That specific jump happened in the early childhood
+        of the three point line. The upward trench was a “result of a gradual increase in 3PTA throughout the seasons”
+        (Freitas). Freitas takes an objective observer role, whereas Partnow seems to have some dog in the fight over
+        the soul of basketball. Partnow claims that “it was a stroke of luck for basketball as a spectator sport that
+        the three-point line was invented prior to the ability to track and record shot locations. The game could have
+        easily become borderline unwatchable with the order reversed” (Partnow 116). This is where my personal biases
+        come out. My fear is that as the mid range shot dies it will take basketball with it; basketball could become
+        overly afflicted by three-true-outcome strategies like baseball. Thankfully basketball has a little more nuance.
+        Not to say that is better, “well-designed games or sports allow for multiple plausible avenues that give
+        reasonable chances of success. This is not that” (Partnow 117). My (possibly, plausible, probably) irrational
+        fear is that in basketball the only avenues to success will be shooting 3's and taking layups. That being said,
+        “the shifting of shots from other spots to three-point range does not mean the NBA has become a jump shooting
+        league. At least it hasn't become more of one than it already was” (Partnow 120). So hopefully the soul of
+        basketball is safe. One incredibly interesting thing Partnow found was that “it was almost exclusively assisted
+        midrange shot attempts that had been subbed out” for three-pointers (Partnow 128). That observation is exactly
+        the kind of red flag that I am determined to investigate, and other flags like it will guide my study.
+      </p>
+      <h2>Data</h2>
+      <p> I will be using that data from <a
+          href="https://github.com/wyatt-ai/nba-movement-data">https://github.com/wyatt-ai/nba-movement-data</a> which
+        is a helpful adaptation of
+        the original repository: <a
+          href="https://github.com/sealneaward/nba-movement-data">https://github.com/sealneaward/nba-movement-data</a>
+        (thanks to our intrepid professor for
+        the help). The repository consists of event and tracking data for NBA games from the 2015-16 season, provided by
+        SportVU. I will not be able to examine every game because of computational limitations (ie my computer doesn't
+        have space for every game from that season on it), but I am extremely excited to launch into the data
+        nonetheless.
+      </p>
+      <h2>Methodology</h2>
+      <p>
+        I want to examine a couple things that may not have been taken into account when mid-ranges were eliminated from
+        basketball. I will examine how shots affect opposing defensive arrangements as games progress, and hopefully
+        find which situations a mid range shot is advisable under. I expect that these goals will lead down some rabbit
+        holes. However, I would love to take the time to look at some simpler measurable quantities: like expected
+        points on a possession following different shot types.
+      </p>
+      <p>
+        Another place where I will examine the impact of mid range shots is the psychological impact they have on
+        defenses. However, I cannot look inside the heads of players while I sit here X years in the future. To try and
+        approximate this impact will be crucial to project as it incorporates many of the elements I wished to look at
+        above. While this is difficult, keeping it in mind will guide my study in more productive directions than wildly
+        jumping into the data and attempting a regression on everything in sight. Encoding domain knowledge into
+        methodology is crucial for studies that examine the nitty-gritty details of a game.
+      </p>
+      <p>
+        My goal is a lofty one, and even I am not sure there is sufficient evidence to get me to where I need to go. The
+        upshot: I am trying to find situations where 2 > 3. Even if I cannot find a niche that the mid range shot fills,
+        I will have performed in-depth analysis on a topical subject from an unorthodox angle.
+      </p>
+      <h2>Limitations</h2>
+      <p>
+        The data that I was working with presented a major limitation to research potential. The fact that the data is a
+        copy of the original data, which has been taken away from the public domain, is likely the culprit. The result
+        is inconsistent data that must be massaged in order to be effectively utilized. Specifically, the shot logs
+        which I was so interested in contain duplicate values. This is not just an effect of normalizing the data ( i.e.
+        this problem extends to the raw data as well). I was excited to look at sequences of teams' shots, and because
+        of the nature of the study I undertook this limitation had an outsized effect
+      </p>
+      <h2>Data Fixing</h2>
+      <p>
+        To deal with the limitations of the data there were two options: manually fix values that I could or fix them
+        using some sort of determined method. It was possible to manually fix shot times by tracking the distance
+        between the ball and the shooter (after that other necessary information could be extracted as well, e.g. shot
+        location), but was a time consuming process and not viable for extended study. The algorithm I was forced to use
+        was fixing shot times and other variables based on the time the scoreboard was showing at the time of the shot:
+        finding the closest corresponding time to two decimal places in the tracking data and taking that as shot time.
+        The effect, as can be visualized below, was substantial, but not completely inhibiting. The repository comes
+        with a method to find shot times, which I considered re-writing, and there are certainly others. While the
+        specifics of this sort of data science are incredibly intriguing, they are outside the scope of this project and
+        will necessarily remain something for me to consider examining independently.
+      </p>
+      <img src="/assets/images/fixed-unfixed-shots.png" alt="Fixed vs Unfixed Shots" style="width: 100%;">
+      <h2>Results + Justification</h2>
+      <p>
+        Midrange shots don't present themselves favorably to modern analytics. The argument that they provide diminished
+        returns on a per-shot basis cannot be disproven. However they represent a crucial element in the foundation of
+        basketball: a building block. When James Naismith put up a peach basket, he didn't paint a three point line;
+        there was no reason to shoot from farther than you had to. But eventually the jump shot evolved, and it
+        represented another threat that defenses had to defend. Jump shots never go in more than layups. They provide
+        their value by making defenders respect that tendency on following possessions. The addition of the three point
+        line to this changes the geometry of the court. Now it seems reasonable to just take your jump shots from behind
+        the line to cash in on the bonus point. But it is possible to take away both the post and limit 3's as we've
+        seen with the drop coverages, and as the league gets more athletic that could get even more prevalent. When
+        teams are able to do that, the midrange is another tendency you can show and make them respect. Over the three
+        games that I analyzed in my study the results support this conclusion. Teams got better looks and knocked them
+        down more efficiently when the previous shot was from the midrange. Effectively I have found the niche where
+        midrange shots provide value that is not obvious from usual methods.
+      </p>
+      <h3>Next Shot Statistics</h3>
+      <div class="table-container">
+        <table id="csvTable">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <script src="/assets/js/loadTable.js"></script>
+      <p>
+        Especially in the modern NBA that heaps emphasis on 3-pt shooting, the results are encouraging for the state of
+        midrange shooting. If these results hold on a larger scale then midrange shots could be presented as a way to
+        engineer better shots for NBA teams. These results are not a prescription. Optimizing shot selection on
+        sequences of possessions is even more impractical than doing so on a per-shot basis.
+      </p>
+      <h2>Future Study</h2>
+      <p>
+        The next focus of my study will be attempting to build a model that captures the gravity that players have. This
+        is a recent phenomenon in the NBA, and I was able to observe it first hand during this project. (fig. 4). My
+        current idea is to treat the game like a 10-body problem and attempt to model it utilizing data driven methods
+        for dynamical systems.
+      </p>
+      <h2>Works Cited</h2>
+      <p style="text-indent: 40px;">
+        Freitas, Lucas. “Shot Distribution in the NBA: Did We See When 3-Point Shots Became Popular?” German Journal
+        of Exercise and Sport Research, Springer Berlin Heidelberg, 2021, www.ncbi.nlm.nih.gov/pmc/articles/PMC7712598/.
+      </p>
+      <p style="text-indent: 40px;">
+        Partnow, Seth. The Midrange Theory: Basketball's Evolution in the Age of Analytics. Triumph Books LLC, 2022.
+      </p>
+
+
+    </div>
+  </main>
+</body>
+
+</html>

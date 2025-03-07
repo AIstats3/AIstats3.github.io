@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!--begin _includes/seo.html-->
+  <title>Blog - Nicholas LaMonica</title>
+  <meta name="description" content="Homepage for Nicholas Heichler LaMonica">
+  <meta name="author" content="Nicholas Heichler LaMonica">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Nicholas Heichler LaMonica">
+  <meta property="og:title" content="Blog">
+  <meta property="og:url" content="AIstats3.github.io/blog/">
+  <meta property="og:description" content="Homepage for Nicholas Heichler LaMonica">
+  <link rel="canonical" href="https://AIstats3.github.io/blog/update-11-14-22/"> <!--CHANGE THIS-->
+  <!--end _includes/seo.html-->
+
+  <!--Viewport include-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100..900&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+
+<body>
+  <header class="header">
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/portfolio/">Portfolio</a></li>
+        <li><a href="/blog/">Blog</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <aside class="sidebar">
+      <ul>
+        <li><a href="https://www.linkedin.com/in/nicholas-lamonica-962004172" target="_blank"><i
+              class="fab fa-linkedin"></i>LinkedIn</a></li>
+        <li><a href="https://github.com/AIstats3" target="_blank"><i class="fab fa-github"></i>Github</a></li>
+        <li><a href="mailto:nicklamonica2001@gmail.com" target="_blank"><i class="fas fa-envelope"></i>Email</a></li>
+        <li><a href="/assets/docs/resume.pdf" target="_blank"><i class="fas fa-file-pdf"></i>Resume</a></li>
+      </ul>
+    </aside>
+
+    <div class="content">
+      <h1>Update 11-14-22</h1>
+      <p>
+        Welcome back tout le monde!
+
+      </p>
+
+      <p>
+        Last time I did one of these was before the 2022 NBA season, and in the time since then I have hand-tracked and
+        compiled shooting data from sources all over the internet (mostly basketball-reference).
+
+      </p>
+      <h3>But more importantly, The Celtics went to the NBA finals.</h3>
+      <p>
+        I was working a lot during the series so I couldn't record every game, but in the game I did, the C's shot
+        profiles did not suggest winning basketball. Meanwhile Stephen Curry shot the lights out from all over the
+        court. In the playoffs, he compared favorably against all point guards when shooting from all distances further
+        than 3 feet away; ridiculous. Curry's shooting profile looks like what Chris Paul has put up most of his career.
+        Curry had a total OVS+ of 1.02, good for 4th among all point guards who played at least 132 minutes in the
+        playoffs. And he was behind only Kyrie Irving (1.44), Monte Morris (1.9) of Denver, and the aforementioned Paul,
+        who came out on top by a considerable margin with a OVS+ of 5.9. Of those four, Curry and Paul were the only
+        ones to play past the 1st round of the playoffs
+
+      </p>
+
+      <p>
+        I have completed the data base of NBA shooting data from 1997-current (from basketball-reference.com), and will
+        post the excel sheets with the OVS+ attached to each of them, with frequency+ and fg+ coming in the next few
+        weeks. They're fun sheets to play around with. You can compare players from different teams and those who have
+        played a minimum amount of minutes to get more insight from the base data, or you can just look at
+        distance-by-distance breakdowns. The world (numbers) are your oyster.
+
+
+      </p>
+      <p>
+        One thing that still happens is that players who have played a low amount of minutes, players who come in take
+        one shot and check out again, have a higher degree of deviation in their scores. It does reflect the nature of
+        the stat; in that they have demonstrated a threat from at least some range, but we are left without an idea of
+        how they shoot from all other ranges.
+
+
+      </p>
+      <p>
+        For example, also in the 2022 playoffs, Nickeil Alexander-Walker had a OVS+ of almost 7, (a very good grade),
+        but this came from a sample size of only two shots, both from the 3-10 foot range, and making them both. Which,
+        based on the way OVS+ is calculated gave him a score of 12 from that distance, and even paired with zeros from
+        all other ranges he still logged a high OVS+.
+
+
+      </p>
+      <p>
+        That more or less concludes the recap of what I've done, so let's look towards the future. In the past I have
+        used excel macro commands to semi-automate the OVS+ process, but I still have to manually enter the formula. My
+        fix for this is to code the calculation into R, so that the process will be fully automated. At the moment my
+        lovely, old computer is not able to install R Studio, so I am working out of the console which just makes it a
+        little tedious.
+
+
+      </p>
+      <p>
+        The next step is to start doing some modeling with the data. As I do not have anyone looking over my shoulder
+        telling me what's right and wrong, I will just be trying things out. The frequency% and fg% portions resemble a
+        multinomial distribution and a binomial distribution respectively, so I will start there and try to find a way
+        to combine them. My goal is to be able to extrapolate past data to present day.
+
+
+      </p>
+
+      <p>
+        -Nick
+      </p>
+    </div>
+  </main>
+</body>
+
+</html>

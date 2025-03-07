@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!--begin _includes/seo.html-->
+  <title>Portfolio - Nicholas LaMonica</title>
+  <meta name="description" content="Homepage for Nicholas Heichler LaMonica">
+  <meta name="author" content="Nicholas Heichler LaMonica">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Nicholas Heichler LaMonica">
+  <meta property="og:title" content="Portfolio">
+  <meta property="og:url" content="AIstats3.github.io/portfolio/">
+  <meta property="og:description" content="Homepage for Nicholas Heichler LaMonica">
+  <link rel="canonical" href="https://AIstats3.github.io/portfolio/ovs/">
+  <!--end _includes/seo.html-->
+
+  <!--Viewport include-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100..900&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <style>
+    /* Ensure iframe is visible */
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      margin-top: 20px;
+    }
+
+    select {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/portfolio/">Portfolio</a></li>
+        <li><a href="/blog/">Blog</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <aside class="sidebar">
+      <ul>
+        <li><a href="https://www.linkedin.com/in/nicholas-lamonica-962004172" target="_blank"><i
+              class="fab fa-linkedin"></i>LinkedIn</a></li>
+        <li><a href="https://github.com/AIstats3" target="_blank"><i class="fab fa-github"></i>Github</a></li>
+        <li><a href="mailto:nicklamonica2001@gmail.com" target="_blank"><i class="fas fa-envelope"></i>Email</a></li>
+        <li><a href="/assets/docs/resume.pdf" target="_blank"><i class="fas fa-file-pdf"></i>Resume</a></li>
+      </ul>
+    </aside>
+
+    <div class="content">
+      <h1>Offensive Veratility Score</h1>
+      <h2>Background</h2>
+      <a href="/assets/docs/OVS notes.pdf" target="_blank" class="blog-link">OG OVS Brainstorm - Method behind the
+        madness</a>
+      <p>
+        OVS started as a joke. I wanted a stat that would represent Paul Pierce's shot-making ability in a favorable
+        light. Now, in its current state, you can think of OVS as a heat map stat that adjusts
+        for position.
+        Below, you will find a complete database of the statistic, with breakdowns by range, for every year since 1996,
+        when the NBA started
+        tracking shot distance. Data for 2024-2025 was updated as of: January 30th, 2025 .
+      </p>
+      <h2>Result</h2>
+      <p>
+        OVS addresses a significant barrier within sports analytics: how to measure soft skills.
+      </p>
+      <p>
+        What's important to understand is the original version of this stat was faaaar more complex than the version
+        that I have turned into the OVS. This was always the core of what I was trying to do,
+        but there were other components as well. A few examples being: a players ability to hit contested shots, how
+        well they create shots for others, and things like offensive rebounding. This was really going to be a
+        comprehensive stat representing a players total offensive value. I still want to work on perfecting those
+        aspects of what I was trying to do, although they might turn into separate projects.
+      </p>
+      <p>
+        Regardless, the current version of the OVS is the product of a lot of research, tinkering, and an endless amount
+        of spreadsheets. What I have now is a stat the can ACCURATELY convey a players ability to shoot from all
+        distances. It is prone to exageration in small samples, but over more minutes played it can give insite into the
+        type
+        of floor spacing a player provides. All while serving its original purpose: buoying players who take + make a
+        lot
+        of midranges.
+      </p>
+
+      <h1>Season Stats Viewer</h1>
+
+
+      <!---Code for switching between tables-->
+      <label for="season-selector">Select a Season:</label>
+      <select id="season-selector" onchange="switchSeason()">
+        <!-- JavaScript will populate this dropdown -->
+      </select>
+
+      <iframe id="season-frame"></iframe>
+
+      <script>
+        // Mapping of seasons to their Google Sheets embed URLs
+        const sheetLinks = {
+          "1996-1997": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ21lsM7Ix-oa8GEpSq07tCoTVF3daPlCTHdkUAPdopYK0Z8TbUy7wBclJG4M-J4rF59tgzmxHMQ7G8/pubhtml",
+          "1997-1998": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSnSKo0GAJNw2VlT2IErjWNpduOQKpbfvocDQZb3-e44VQbgxEHUup36bLhsPzmzf7h49TqfqOHmKDs/pubhtml",
+          "1998-1999": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRLVjTHkmU2Pud8xRQY111mxMSlwLaQJppwNbUz7Pynm8U9MDbwuCRk7LBM3jV6k67susC2WYyMyBn2/pubhtml",
+          "1999-2000": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSK7tRMXP9P996hf8m0OQgmZJhvqvC_1Bjd-JT-L4oFIEuRQKjB9oX1Hf-ETgy2qyt3A2JYWToUzkwc/pubhtml",
+          "2000-2001": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRuMxQMAYPBjpmEmfIon0j9EKkQEm4cX4kJNHdTwqUyLVbt7Lf5Gmo0M6rfmsVAZ2XAPEh-JPwblkJc/pubhtml",
+          "2001-2002": "https://docs.google.com/spreadsheets/d/e/2PACX-1vS3_1VlPsqF_4sxdV3co_X0VOGW1O3y5OsYai17xKrZYy-QH4rhNy9cD3IEOhYn7lDz4ZAfxb2Xb6yq/pubhtml",
+          "2002-2003": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNTSWP99o_-2h7dbbH9eDBwn9yxlMXxo6go06Lo6J_ZkXsuAj7tYEXY5tpVOz9dKGgQQPzfIQJiRh7/pubhtml",
+          "2003-2004": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSqIjo7Z3iQRmIyJxzBbNPC5kR6Sl-a9ep2hCNJFG4V_mzmZSOLMt1Dzx3sp83J2sBlADk2f0UPU-R1/pubhtml",
+          "2004-2005": "https://docs.google.com/spreadsheets/d/e/2PACX-1vS6kbdE7R4nlLPCSRYyJZxxS-4Lsj4x7nUU8zD_XtdSMckXrezC-HKciFqxRHdzZswnG4M-e9aypq5F/pubhtml",
+          "2005-2006": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQXj14Sgsriu0QDm18853VwuaBzyha2RCPCDP36zeo1Q2Er75py_WdwSJQ7TmtG6L3eqiGtDZLVpcx/pubhtml",
+          "2006-2007": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSr6xeOFmAx8v1Rz5z6HiAXQtedthpUjJ9P0TwW4DE3LPK3kji27jYZb1NrWokM95C8ZWPidJu89THs/pubhtml",
+          "2007-2008": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSMKPK2eywIgU-dbQOtIoeaJwHCDEI4pGdUa4oLXYGrE05BKcVr9OXER8SzwuO5FV0C8YykNZG-9N5D/pubhtml",
+          "2008-2009": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR0q2r828vQNec4CROIC5M0C1UrETrg4OCkgaZDNjtFjodUGB1cN1N7iiFZK345KpSfgHmQZlo32YYJ/pubhtml",
+          "2009-2010": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTmRttEm3aXENwogfzLx6LqhoVIJfAHPcOlOf6X7CBnRsVocRxATHNvoNBMxkhKfmu3Vf7TxYtchwmb/pubhtml",
+          "2010-2011": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRoc3ZvEQAuEQACS8ww99TtCImWFEFiO1SoUeDRQcS5RcqmAyaTpstPo6qTP16Y9PtP9cK7iCaE33O0/pubhtml",
+          "2011-2012": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRWmUa5lZX3gVWpOPq9tLYRkIb9mG26EDjyp9EPGfemMYrpy6r3e6t-AlmPu4AmiSSYlot7N0b-3EUK/pubhtml",
+          "2012-2013": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSLR08g5KEw4Jlo8ZPfpGF0zwLBS7ETKEVMMArpelbJQeGTrF3HjVKyxVl2yyJUmgrazX5XDBNfviIZ/pubhtml",
+          "2013-2014": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTi8ttIhO2MfdS1tfgSbi76FvhWjMiNVE41iKl5LwWPL3T3nwaEFb9NA9kOQBVcE4XHHxiCZoFh_a4_/pubhtml",
+          "2014-2015": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTuIJhaqT6kp7N4LPMdsybBUp3HfWPR8gxakRswE-9IKc3BQwkZOc73ZJzYgRBqdE07eMjD4H6nvwMH/pubhtml",
+          "2015-2016": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTKaEN_F-8Hz1ej3d1erQHpU5pFnBxrDcBhvh8RZJBQtVlOHetgSR3IR-czZfVVZnEIc8MF0RGkK2kZ/pubhtml",
+          "2016-2017": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTseamBnLiLtcu6xV7A8S63Ax2pSOFy0Za_9C4Ik5mRvhgm0Z4FElQeag9009YMHkLbk9GPNip8WLqL/pubhtml",
+          "2017-2018": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTmj_WlY9Qnq5zAO8l2Or4T8MFTbeqYILuw1bq1-cITSUtQvhn0HmZln5s60k6BrOt23HEvE66EHrs3/pubhtml",
+          "2018-2019": "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3CSHxNe5L2jXqkaFdhpWCAdg8LSWGxbxB83vyDvRh3vQ5Ma7UPl5NYAYIk1XYZalVxYkeME0yA0o0/pubhtml",
+          "2019-2020": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR2IXUj8rm6VEoOVefjnEXxF6XELVq_X8DrDkeb-617tnup7jljGsOTQ9wGnjrvd8GErn1VHrl1LxCe/pubhtml",
+          "2020-2021": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNSh6zvIPZeKUDSItpNxBFCrd2pVAf7gW1nT1-zQLQqpNhmbag_wWbdOTeBbOMuqC45fCO3Jdmh_Ob/pubhtml",
+          "2021-2022": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSevu3jKzN6TzvJbzMBUHARIyuehUmp7MSdHKXFTb2KVJgCn-YC_4tV8mxSdOq1Vt9QdYLp3ZuvR7HA/pubhtml",
+          "2022-2023": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmVwhPgdaOKrVClw861L7D8fDvLgl3SrHcAtu6LaCqHyaK4g6VvI7r8aIKlFS3_Mvu_0DkngG5YjrY/pubhtml",
+          "2023-2024": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRp5JK4UJz9Bis1bUe-XqgcfUqP6fbTxk7LQrtGdJFlHIjAVE2KnEY3YXi8JmdRBl8BVpaeNIt8gh-x/pubhtml",
+          "2024-2025": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_WAxbKlCzBaI8B3Z_6ZQ32km2etSCppyo9Gc43U0As1Jv3_dldzRiTd8otRdyHjIdMdRfqNu-X9Nr/pubhtml"
+        };
+        const selector = document.getElementById("season-selector");
+        const iframe = document.getElementById("season-frame");
+
+        // Populate dropdown
+        Object.keys(sheetLinks).forEach(season => {
+          const option = document.createElement("option");
+          option.value = season;
+          option.textContent = season;
+          selector.appendChild(option);
+        });
+
+        // Set default season
+        const defaultSeason = "2024-2025";
+        selector.value = defaultSeason;
+        iframe.src = sheetLinks[defaultSeason];
+
+        // Function to switch between seasons
+        function switchSeason() {
+          const selectedSeason = selector.value;
+          iframe.src = sheetLinks[selectedSeason] || ""; // Prevents broken links
+        }
+      </script>
+
+    </div>
+  </main>
+</body>
+
+</html>

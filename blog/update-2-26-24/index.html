@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!--begin _includes/seo.html-->
+  <title>Blog - Nicholas LaMonica</title>
+  <meta name="description" content="Homepage for Nicholas Heichler LaMonica">
+  <meta name="author" content="Nicholas Heichler LaMonica">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Nicholas Heichler LaMonica">
+  <meta property="og:title" content="Blog">
+  <meta property="og:url" content="AIstats3.github.io/blog/">
+  <meta property="og:description" content="Homepage for Nicholas Heichler LaMonica">
+  <link rel="canonical" href="https://AIstats3.github.io/blog/update-2-26-24/"> <!--CHANGE THIS-->
+  <!--end _includes/seo.html-->
+
+  <!--Viewport include-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100..900&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+
+<body>
+  <header class="header">
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/portfolio/">Portfolio</a></li>
+        <li><a href="/blog/">Blog</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <aside class="sidebar">
+      <ul>
+        <li><a href="https://www.linkedin.com/in/nicholas-lamonica-962004172" target="_blank"><i
+              class="fab fa-linkedin"></i>LinkedIn</a></li>
+        <li><a href="https://github.com/AIstats3" target="_blank"><i class="fab fa-github"></i>Github</a></li>
+        <li><a href="mailto:nicklamonica2001@gmail.com" target="_blank"><i class="fas fa-envelope"></i>Email</a></li>
+        <li><a href="/assets/docs/resume.pdf" target="_blank"><i class="fas fa-file-pdf"></i>Resume</a></li>
+      </ul>
+    </aside>
+
+    <div class="content">
+      <h1>Update 2-26-24</h1>
+      <p>
+        Since the last update a lot has changed (most importantly Marcus Smart is no longer a Celtic, sad face). I
+        intern for the basketball team at Concordia now, I took a class on sports analytics (shoutout professor Joshua
+        Wyatt Smith), and made a minor but impactful change to OVS. The biggest change has just been improving my
+        methodology (I won't expose myself too badly but I was hand-tracking stats for Concordia in my school
+        notebooks).
+
+      </p>
+
+      <p>
+        The sports analytics class is one of the few being offered at the university level, and the opportunity to work
+        towards my goals in an academic setting was an invaluable experience. Course design meant I could go anywhere I
+        wanted with my research, so I turned to tackling the same question that OVS addresses: what is the usefulness of
+        a midrange shot? By using NBA tracking data I had enough information at my fingertips to get into the
+        meat+potatoes of the question. Although the data was not always reliable, my findings pointed in the same
+        direction as my intuition. By tracking shots on subsequent possessions, I observed teams getting better less
+        contested shots on the possession following a midrange shot, and converting those opportunities more frequently.
+        If this holds, it demonstrates that midrange shots have at least some sort of value that other shots don't, and
+        it may prove they are undervalued like I think.
+
+      </p>
+      <p>
+        Having access to Josh was probably the most valuable part of the class in truth. He really did an excellent job
+        in designing the course. It meshed well with the thoughts I'd been having independently that analyzing sports
+        should take as much creativity as it does to play them. I think a lot about encoding the logic and intuition of
+        basketball with the things I do on a daily basis for Concordia. The first office hours Josh held I was up there,
+        and ready to get into it. First thing he told me: OVS is bullshit (my words not his). For what it attempts to
+        capture, it is far too narrow in terms of the scope of data it takes into consideration. Incorporating closest
+        defender data is the obvious next step, but in its current form it can still give us some good information.
+
+      </p>
+
+      <p>
+        The change to OVS really was simple: divide the sum by 5 instead of subtracting 5. I think I literally realized
+        this as I was writing the formula on that chalkboard for Josh in that first conversation. It fixed one major
+        problem immediately; drastically re-shaping the distribution of values the stat spits out. Where values
+        previously could get exceedingly high, especially for centers, these values are now much more normalized. Yet it
+        still maintains the mathematical foundation of OVS. When I was first building the stat, I wanted to build it in
+        a way that was robust. Drawing from the data itself without excessive need for user input or weighting; almost
+        as an effort to make sure the essence of the information was able to be felt in the output. At the end of the
+        day, what I'm really doing is conveying information, and in sports particularly it's hard to capture the whole
+        picture. So we break it down into counting stats, or into play-by-play, or some combination of the two (tagged
+        event data). We really need to be on the continuum, we need to use data in a way that is faithful to the
+        inherent truth that it represents. That's my little diatribe for now, suffice to say I'm now more confident in
+        explaining OVS.
+
+
+      </p>
+      <p>
+        Now, I can break down OVS to be even more granular. We could use 10, 15, 24, 100 different zones and still get a
+        sensible output. You could tailor it to any situation, or any combination of zones. I have a particular interest
+        in identifying zones to cluster by using the techniques we learned in class, but between watching film for
+        Concordia and finishing off my degree with some high-level math classes, I've been too busy. Once the season is
+        over I'll have a little more time on my hands to get back into it.
+
+
+      </p>
+      <p>
+        At this point I will mention that my project on midrange shots led me down the rabbit-hole when it comes to
+        "gravity"in basketball. The conclusion I was reaching before I identified flaws in the data was that midrange
+        shots may have greater gravity because of their situation inside the swaths of empty space between the three
+        point line and the rim. Although it's on the back-burner for now, I wish to incorporate data-driven methods for
+        dynamical systems in an attempt to model basketball as a kind of 10-body problem. The goal being to approximate
+        the gravity that players have as they move around the court. Doing this would combine everything I have talked
+        about. The logic and rules of the game need to be baked into the construction of any system aimed at accurately
+        capturing player behavior.
+
+
+      </p>
+      <p>
+        I suppose that's all for now. I'm going back to Boston for Sloan in three days, and Concordia has our RSEQ
+        semi-final game in two days, and hopefully I'll be able to make it back to catch the final if we make it.
+        Shoutout Sami Jahan for 1,500 points, shoutout McGill for coming in last this year.
+
+
+      </p>
+
+      <p>
+        -Nick
+      </p>
+    </div>
+  </main>
+</body>
+
+</html>

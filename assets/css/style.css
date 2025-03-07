@@ -59,7 +59,7 @@ nav ul li a:hover {
 
 /* Sidebar */
 .sidebar {
-  width: 200px;
+  width: 134px;
   background-color: var(--color-primary);
   padding: 15px;
   text-align: left;
@@ -69,7 +69,7 @@ nav ul li a:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh;
+  height: 174px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -131,7 +131,40 @@ p {
   font-size: 22px;
   color: var(--color-secondary);
   margin-bottom: 29px;
+  margin-right: 50px;
 }
+
+.blog-link{
+  font-size: 22px;
+  color: var(--color-secondary);
+  margin-bottom: 18px;
+}
+
+/* Tables */
+.table-container {
+  width: 100%;
+  overflow-x: auto; /* Allows scrolling on small screens */
+  margin: 20px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--color-white);
+}
+
+th, td {
+  border: 1px solid var(--color-secondary);
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: var(--color-secondary);
+  color: var(--color-white);
+  font-weight: bold;
+}
+
 .responsive-img {
   width: 50%; /* Adjust percentage as needed */
   height: auto; /* Maintains aspect ratio */
@@ -143,6 +176,39 @@ p {
   margin-left: 20px;
 }
 
+/* Portfolio Page */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  justify-items: center;
+}
+
+.project {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.project:hover {
+  transform: scale(1.05);
+}
+
+.project img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.project h3 {
+  margin: 10px 0;
+  font-size: 1.2rem;
+  color: #333;
+}
 
 /* Responsive Design */
 @media screen and (max-width: 768px) {
@@ -211,6 +277,21 @@ p {
     margin: 0, auto;
     float: none;
     display: block;
+  }
+  th, td {
+    padding: 6px;
+    font-size: 14px;
+  }
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .project img {
+    height: 150px;
+  }
+
+  .project h3 {
+    font-size: 1rem;
   }
 
 }
