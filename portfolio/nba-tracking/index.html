@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!--begin _includes/seo.html-->
+  <title>Portfolio - Nicholas LaMonica</title>
+  <meta name="description" content="Homepage for Nicholas Heichler LaMonica">
+  <meta name="author" content="Nicholas Heichler LaMonica">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Nicholas Heichler LaMonica">
+  <meta property="og:title" content="Portfolio">
+  <meta property="og:url" content="AIstats3.github.io/portfolio/">
+  <meta property="og:description" content="Homepage for Nicholas Heichler LaMonica">
+  <link rel="canonical" href="https://AIstats3.github.io/portfolio/nba-tracking/">
+  <!--end _includes/seo.html-->
+
+  <!--Viewport include-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100..900&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+
+<body>
+  <header class="header">
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/portfolio/">Portfolio</a></li>
+        <li><a href="/blog/">Blog</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <aside class="sidebar">
+      <ul>
+        <li><a href="https://www.linkedin.com/in/nicholas-lamonica-962004172" target="_blank"><i
+              class="fab fa-linkedin"></i>LinkedIn</a></li>
+        <li><a href="https://github.com/AIstats3" target="_blank"><i class="fab fa-github"></i>Github</a></li>
+        <li><a href="mailto:nicklamonica2001@gmail.com" target="_blank"><i class="fas fa-envelope"></i>Email</a></li>
+        <li><a href="/assets/docs/resume.pdf" target="_blank"><i class="fas fa-file-pdf"></i>Resume</a></li>
+      </ul>
+    </aside>
+
+    <div class="content">
+      <h1>Using NBA Tracking Data to analyze plays</h1>
+      <p>
+        In this article I am going to demonstrate how we can use NBA tracking data to make surface level observations
+        about plays in basketball. To do this I have selected two plays that occured on subsequent possessions
+        during the Cavs vs Warriors 2015 Christmas day game. I have previously used these plays as examples for my
+        <a href="/portfolio/midrange-final/">2>3 project</a>, and I will admit they are a little cherry picked to
+        illustrate my point in that project. The code used to generate these images can be found
+        <a href="https://github.com/AIstats3/NBA-Final/blob/master/Play_Analysis.ipynb">here</a>.
+      </p>
+      <p>
+        The first play is a midrange jumper taken by Shaun Livingston, one of the best midrange shooters of the
+        modern era. Leandro Barbosa sets a screen for Livingston before moving towards the top of the 3-points arc
+        to provide a shooting threat. Mo William is caught in the action cheating towards Livingston.
+      </p>
+      <img src="/assets/images/play1-visualization.png" class="responsive-img-article">
+      <p>
+        By looking at the distance between the player we can visualize this defensive lapse by Williams! In this
+        data set 10 normalized units are eqaul to 1 foot.
+      </p>
+      <img src="/assets/images/play1-distances.png" class="responsive-img-article">
+      <p>
+        On the second play, Livingston gets the ball in a similar position on the other side of the court. This
+        time it's Iman Shumpert who gets caught out of position by the threat of Livingston's jumper, leaving
+        Andre Iguodala wide open at the top of the 3-point arc.
+      </p>
+      <img src="/assets/images/play2-visualization.png" class="responsive-img-article">
+      <p>
+        We can see the way that Shumpert gets caught up and tries to recover to the shooter in the plot of 
+        distances between players as well!
+      </p>
+      <img src="/assets/images/play2-distances.png" class="responsive-img-article">
+      <p>
+        We can clearly see the gravity that Livingston is creating. Regardless of whether this is bad defense 
+        or not, with the last possessions still fresh in mind the threat of Livingston's shotmaking causes
+        Shumpert to lose his man. Leading to a great look for the Warriors from 3 that Iguodala converts.
+      </p>
+      <p>
+        It is hard to find full NBA games on YouTube, and it's illegal to use Leaguepass videos without
+        the NBA's explicit consent, but in the future I hope to be able to include side-by-side video 
+        analysis with tracking data!
+      </p>
+
+
+    </div>
+  </main>
+</body>
+
+</html>

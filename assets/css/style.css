@@ -181,6 +181,16 @@ th {
   float: right;
   margin-left: 20px;
 }
+.responsive-img-article {
+  width: 50%; /* Adjust percentage as needed */
+  height: auto; /* Maintains aspect ratio */
+  display: block; /* Removes extra spacing below inline images */
+  margin: 0 auto; /* Centers the image */
+  border-radius: 2px; /* Optional: adds rounded corners */
+  margin-left: 20px;
+  margin-bottom: 20px;
+
+}
 
 /* Portfolio Page */
 .projects-grid {
@@ -278,6 +288,13 @@ th {
     padding: 10px;
   }
   .responsive-img {
+    width: 80%; /* Makes the image larger on smaller screens */
+    max-width: none; /* Remove the max width limit */
+    margin: 0, auto;
+    float: none;
+    display: block;
+  }
+  .responsive-img-article {
     width: 80%; /* Makes the image larger on smaller screens */
     max-width: none; /* Remove the max width limit */
     margin: 0, auto;
