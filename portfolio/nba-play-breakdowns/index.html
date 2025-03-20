@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!--begin _includes/seo.html-->
+  <title>NBA Play Breakdowns</title>
+  <meta name="description" content="Homepage for Nicholas Heichler LaMonica">
+  <meta name="author" content="Nicholas Heichler LaMonica">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Nicholas Heichler LaMonica">
+  <meta property="og:title" content="NBA Tracking Data">
+  <meta property="og:url" content="https://AIstats3.github.io/portfolio/nba-play-breakdowns/">
+  <meta property="og:description" content="Portfolio for Nicholas Heichler LaMonica">
+  <meta property="og:image" content="/assets/images/clippers-lakers-play1.gif">
+  <link rel="canonical" href="https://AIstats3.github.io/portfolio/nba-play-breakdowns/">
+  <!--end _includes/seo.html-->
+
+  <!--Viewport include-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100..900&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+
+<body>
+  <header class="header">
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/portfolio/">Portfolio</a></li>
+        <li><a href="/blog/">Blog</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <aside class="sidebar">
+      <ul>
+        <li><a href="https://www.linkedin.com/in/nicholas-lamonica-962004172" target="_blank"><i
+              class="fab fa-linkedin"></i>LinkedIn</a></li>
+        <li><a href="https://github.com/AIstats3" target="_blank"><i class="fab fa-github"></i>Github</a></li>
+        <li><a href="mailto:nicklamonica2001@gmail.com" target="_blank"><i class="fas fa-envelope"></i>Email</a></li>
+        <li><a href="/assets/docs/resume.pdf" target="_blank"><i class="fas fa-file-pdf"></i>Resume</a></li>
+      </ul>
+    </aside>
+
+    <div class="content">
+      <h1>Using NBA Tracking Data to Examine Sets</h1>
+      <p>
+        In this article I am going to use NBA tracking data to break down a set that the Clippers ran
+        multiple times in their 2015 Christmas day game against the Lakers. And as promised, this is a
+        game for which film is available on YouTube. All the animations in this article I created using
+        the same data set as the other NBA tracking data posts on my website, and I wrote an improved
+        function that allows us to view the players movement on the court dynamically, instead of using
+        a static image with trails to show players' paths. The function takes a period of time as inputs
+        and returns an animation of each players position on the court during that segment.
+      </p>
+      <p>
+        The set I am looking at is a double high ball screen that the Clippers use to get downhill
+        with speed. The first play comes with 3:38 left in the first quarter.
+      </p>
+      <p>
+        Blake Griffin and DeAndre Jordan come and set a double screen on D'Angelo Russel. DLo tries
+        to hedge to the ball handler's right, but is caught by a hard screen from Jordan, and Paul successfully
+        gets downhill into the heart of the defense.
+      </p>
+      <img src="/assets/images/clippers-lakers-play1.gif" class="responsive-img-article">
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/GqVLOlBOj0E?si=BNcHTTdta84AyFNY&amp;start=765"
+        title="YouTube video player" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <p>
+        If you watched much basketball in the mid 2010's then you know this Clippers team was affectionately
+        nicknamed "Lob City", and on this play they show why as Jordan throws down the alley-oop from CP3.
+      </p>
+      <p>
+        On their very next possession the Clippers go to this double high ball screen again. DLo tries to
+        defend it the same way, but this time Paul goes left before snaking the pick-and-roll and pulling 
+        up for a signature midrange shot.
+      </p>
+      <img src="/assets/images/clippers-lakers-play2.gif" class="responsive-img-article">
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/GqVLOlBOj0E?si=BNcHTTdta84AyFNY&amp;start=800"
+      title="YouTube video player" frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <p>
+        On a personal note this is exactly the type of shot that I am preoccupied with. Paul knows 
+        that the defense is going to be watching out for the lob, and uses the extra space to pull up 
+        for two. Part of why I think midrange shots have underrated value in analytics is that it takes 
+        a high basketball-IQ to make them efficiently. This is a soft skill Paul has mastered.
+      </p>
+      <p>
+        The third time the Clippers run this set is near the end of the 1st half, with just under a minute 
+        remaining in the second quarter. 
+      </p>
+      <p>
+        This time it's Jordan Clarkson who is caught in the action, and he too hedges to Paul's right. 
+        Like in the first play, Paul comes of the screen right and gets to the basket with speed.  
+        Unlike last time, he sees that Roy Hibbert isn't sliding over to stop him from getting to the 
+        rim. Hibbert remembers last time and is concered about the lob threat that a rolling Jordan poses, but it's too 
+        much space to give Paul who makes a tough floater over the late contest.
+      </p>
+      <img src="/assets/images/clippers-lakers-play3.gif" class="responsive-img-article">
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/GqVLOlBOj0E?si=BNcHTTdta84AyFNY&amp;start=2620"
+      title="YouTube video player" frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <p>
+        These three plays evince the spectacular offensive threat that the Lob City Clippers posed to 
+        teams on a nightly basis. The jaw-dropping athleticism of Jordan and Griffin paired with Paul's 
+        genius-level IQ made covering these sorts of actions a nightmare for defenders.
+      <p>
+        The last play the clippers run out of this double high set comes with 0:25 left in the 3rd, this 
+        time with different personel: Paul Pierce (THE TRUTH) joins Jordan as the second screener, and 
+        Jamal Crawford is the secondary ballhandler off a DHO action by Pablo Prigioni(as seen in YouTube footage).
+      </p>
+      <img src="/assets/images/clippers-lakers-play4.gif" class="responsive-img-article">
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/GqVLOlBOj0E?si=BNcHTTdta84AyFNY&amp;start=3910"
+      title="YouTube video player" frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <p>
+        Because of the different personel, the Clippers run a different action out of the set: a 
+        pick-and-pop for Paul Pierce. Pierce is unable to convert on the three-point attempt, though 
+        he could've perhaps gotten a cleaner look if Jordan set a second shooting screen on Julius Randle after 
+        the initial double high screens.
+      </p>
+      <p>
+        
+      </p>
+
+
+    </div>
+  </main>
+</body>
+
+</html>
