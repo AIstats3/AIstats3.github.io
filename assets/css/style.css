@@ -182,7 +182,7 @@ th {
   margin-left: 20px;
 }
 .responsive-img-article {
-  width: 50%; /* Adjust percentage as needed */
+  width: 60%; /* Adjust percentage as needed */
   height: auto; /* Maintains aspect ratio */
   display: block; /* Removes extra spacing below inline images */
   margin: 0 auto; /* Centers the image */
