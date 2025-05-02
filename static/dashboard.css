@@ -1,13 +1,15 @@
 body {
   font-family: Arial, sans-serif;
   margin: 20px;
+  font-size: 24px;
 }
 
 h1 {
   margin-bottom: 20px;
+  font-size: 24px;
 }
 
-/* Dropdown */
+/* Dropdown container */
 .dropdown {
   position: relative;
   display: inline-block;
@@ -20,8 +22,9 @@ h1 {
   padding: 10px;
   border: none;
   cursor: pointer;
-  width: 150px; /* Set fixed width */
-  height: 100px; /* Set fixed height */
+  width: 150px;
+  height: 100px;
+  font-size: 24px;
   text-align: center;
 }
 
@@ -36,7 +39,7 @@ h1 {
   max-height: 200px;
   overflow-y: auto;
   padding: 10px;
-  width: 100%; /* Ensure dropdown content takes full width */
+  font-size: 24px;
 }
 
 .dropdown-content label {
@@ -48,11 +51,32 @@ h1 {
   display: block;
 }
 
-/* Table Styles */
+/* Submit button */
+.submit-button {
+  background-color: #4285f4;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  width: 150px;
+  height: 100px;
+  font-size: 24px;
+  text-align: center;
+}
+
+/* Button container to align side by side */
+.buttons-container {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+/* Table styles */
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  font-size: 24px;
 }
 
 th, td {
@@ -65,62 +89,47 @@ th {
   background-color: #f2f2f2;
 }
 
-/* Submit Button */
-.submit-button {
-  background-color: #4285f4;
-  color: white;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-  width: 150px; /* Set fixed width */
-  height: 100px; /* Set fixed height */
-  text-align: center;
-}
-
-/* Flexbox container for buttons to be side by side */
-.buttons-container {
-  display: flex;
-  gap: 20px; /* Space between buttons */
-}
-
 /* Mobile responsiveness */
 @media screen and (max-width: 600px) {
-  /* Adjust the body and heading margins for smaller screens */
   body {
     margin: 10px;
   }
 
-  h1 {
-    font-size: 1.5em;
-  }
-
-  /* Ensure buttons remain side by side on mobile */
   .buttons-container {
-    flex-direction: row; /* Keep buttons in a row */
-    justify-content: space-between; /* Distribute buttons evenly */
+    flex-direction: row;
+    gap: 10px;
   }
 
-  /* Ensure both buttons maintain the same size */
-  .dropdown button, .submit-button {
-    width: 150px;
+  /* 75% width for dropdown, 25% for submit */
+  .dropdown {
+    flex: 3;
+  }
+
+  .dropdown button {
+    width: 100%;
     height: 100px;
-    font-size: 1em; /* Maintain readability on mobile */
+    font-size: 24px;
   }
 
-  /* Make table more mobile-friendly by allowing horizontal scrolling if needed */
+  .submit-button {
+    flex: 1;
+    width: 100%;
+    height: 100px;
+    font-size: 24px;
+  }
+
+  .dropdown-content {
+    min-width: 100%;
+    padding: 15px;
+  }
+
   table {
+    font-size: 20px;
     overflow-x: auto;
     display: block;
-    font-size: 14px;
   }
 
   th, td {
     padding: 10px;
-  }
-
-  /* Adjust dropdown content for mobile */
-  .dropdown-content {
-    min-width: 100%; /* Ensure the dropdown content is fully responsive */
-    padding: 15px;
   }
 }
