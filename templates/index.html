@@ -10,7 +10,7 @@
 
     <form id="lineup-form">
         <div class="dropdown">
-            <button type="button" id="dropdownToggle">Select Games ▾</button>
+            <button type="button" id="dropdownToggle" style="font-size: 24px;">Select Games ▾</button>
             <div id="gameDropdown" class="dropdown-content">
                 <label><input type="checkbox" id="selectAll"> <strong>Select All</strong></label><br>
                 {% for file in game_files %}
@@ -18,7 +18,7 @@
                 {% endfor %}
             </div>
         </div>
-        <button type="submit" class="submit-button">Submit</button>
+        <button type="submit" class="submit-button" style="font-size: 24px;">Submit</button>
     </form>
 
     <div id="lineup-table"></div>
