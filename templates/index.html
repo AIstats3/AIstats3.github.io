@@ -6,25 +6,23 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
 </head>
 <body>
-  <h1>Lineup Statistics Dashboard</h1>
+    <h1>Lineup Statistics Dashboard</h1>
 
-  <form id="lineup-form">
-      <div class="buttons-container">
-          <div class="dropdown">
-              <button type="button" id="dropdownToggle">Select Games ▾</button>
-              <div id="gameDropdown" class="dropdown-content">
-                  <label><input type="checkbox" id="selectAll"> <strong>Select All</strong></label><br>
-                  {% for file in game_files %}
-                      <label><input type="checkbox" name="game" value="{{ file }}">{{ file }}</label><br>
-                  {% endfor %}
-              </div>
-          </div>
-          <button type="submit" class="submit-button">Submit</button>
-      </div>
-  </form>
+    <form id="lineup-form">
+        <div class="dropdown">
+            <button type="button" id="dropdownToggle" style="font-size: 24px;">Select Games ▾</button>
+            <div id="gameDropdown" class="dropdown-content">
+                <label><input type="checkbox" id="selectAll"> <strong>Select All</strong></label><br>
+                {% for file in game_files %}
+                    <label><input type="checkbox" name="game" value="{{ file }}">{{ file }}</label><br>
+                {% endfor %}
+            </div>
+        </div>
+        <button type="submit" class="submit-button">Submit</button>
+    </form>
 
-  <div id="lineup-table"></div>
+    <div id="lineup-table"></div>
 
-  <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+    <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
 </body>
 </html>
