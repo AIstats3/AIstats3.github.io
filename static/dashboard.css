@@ -1,17 +1,18 @@
 body {
   font-family: Arial, sans-serif;
   margin: 20px;
-
 }
 
 h1 {
   margin-bottom: 20px;
 }
 
+/* Dropdown */
 .dropdown {
   position: relative;
   display: inline-block;
   margin-bottom: 20px;
+  width: 100%; /* Make dropdown full width on small screens */
 }
 
 .dropdown button {
@@ -20,8 +21,11 @@ h1 {
   padding: 10px;
   border: none;
   cursor: pointer;
+  width: 100%; /* Make button full width on small screens */
+  text-align: left;
 }
 
+/* Dropdown content */
 .dropdown-content {
   display: none;
   position: absolute;
@@ -32,8 +36,10 @@ h1 {
   max-height: 200px;
   overflow-y: auto;
   padding: 10px;
+  width: 100%; /* Ensure dropdown content takes full width */
 }
 
+/* Dropdown label style */
 .dropdown-content label {
   display: block;
   margin-bottom: 5px;
@@ -43,6 +49,7 @@ h1 {
   display: block;
 }
 
+/* Table Styles */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -57,4 +64,46 @@ th, td {
 
 th {
   background-color: #f2f2f2;
+}
+
+/* Mobile responsiveness */
+@media screen and (max-width: 600px) {
+  /* Adjust the body and heading margins for smaller screens */
+  body {
+    margin: 10px;
+  }
+
+  h1 {
+    font-size: 1.5em;
+  }
+
+  /* Stack dropdown items vertically */
+  .dropdown {
+    width: 100%;
+  }
+
+  .dropdown button {
+    width: 100%;
+  }
+
+  /* Ensure table cells stack better on mobile */
+  table {
+    font-size: 14px;
+  }
+
+  th, td {
+    padding: 10px;
+  }
+
+  /* Make table more mobile-friendly by allowing horizontal scrolling if needed */
+  table {
+    overflow-x: auto;
+    display: block;
+  }
+
+  /* Adjust the size of the dropdown content */
+  .dropdown-content {
+    min-width: 100%; /* Ensure the dropdown content is fully responsive */
+    padding: 15px;
+  }
 }
