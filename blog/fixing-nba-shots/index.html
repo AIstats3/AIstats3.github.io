@@ -27,6 +27,19 @@
 
   <!-- Custom Styles -->
   <link rel="stylesheet" href="/assets/css/style.css">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Prism.js CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+  <!-- Prism.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <!-- Python support -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <!-- MathJax/LaTeX -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
 </head>
 
 <body>
@@ -55,81 +68,304 @@
     <div class="content">
       <h1>Fixing NBA Shot Times Using Tracking Data</h1>
       <p>
-        Since the last update a lot has changed (most importantly Marcus Smart is no longer a Celtic, sad face). I
-        intern for the basketball team at Concordia now, I took a class on sports analytics (shoutout professor Joshua
-        Wyatt Smith), and made a minor but impactful change to OVS. The biggest change has just been improving my
-        methodology (I won't expose myself too badly but I was hand-tracking stats for Concordia in my school
-        notebooks).
-
+        This article uses NBA tracking data provided by SportVU that can be found in this
+        <a href="https://github.com/sealneaward/nba-movement-data" target="_blank">github repository</a>. There are
+        other articles on my
+        website that discuss the use
+        and limitations of this data, so I will only give a brief refresher.
+        It is 25 Hz that provides the x,y location of the 10 players on the court and the ball, the height of the ball
+        of the court is also provided. It comes pre-packaged with play-by-play data and shot logs similar to the ones
+        that can found using the NBA API <a
+          href="https://github.com/swar/nba_api/blob/master/src/nba_api/stats/endpoints/playbyplayv3.py"
+          target="_blank">here</a>.
+      </p>
+      <p>
+        The play-by-play data comes from live-scoring performed by statisticians during the game, and (as someone who
+        has
+        worked in live-scoring) I can attest that recording the precise time of events is <em>not</em> what you
+        are focused on in the middle of a game. Often times it takes a couple extra seconds to see the outcome of a shot before the event is
+        officially recorded.
+        As such, this repository comes with setup to fix those reported shot times to the precise moment the ball leaves
+        the shooters hand. <em>The Problem: The built in setup function doesn't work.</em> Somewhat of an
+        exaggeration; inconsistent may be a better word. When the legacy
+        function works it works exactly as intended, but it doesn't always work. Duplicate shot times, duplicate shot
+        locations,... I've covered this in previous articles, so I will now continue to explaining how the
+        "fix_shot_times" builtin is designed to function.
+      </p>
+      <p>
+        If you don't like geeking out over math then feel free to skip this section after the next two sentences. In
+        summary:
+        the built-in function finds the shot time by identifying when the ball's vertical acceleration is greatest.
+        Makes sense, right? When a player takes a shot the ball quickly ascends, so if we find when that
+        ascent begins that would be the time the shot was taken. Now lets breakdown how this methodology is implemented
+        in practice.
+      </p>
+      <h1>The Savitzky-Golay Filter</h1>
+      <p>
+        The primary purpose of the Savitzky-Golay filter is to smooth noisy data. Here's how it works.
       </p>
 
       <p>
-        The sports analytics class is one of the few being offered at the university level, and the opportunity to work
-        towards my goals in an academic setting was an invaluable experience. Course design meant I could go anywhere I
-        wanted with my research, so I turned to tackling the same question that OVS addresses: what is the usefulness of
-        a midrange shot? By using NBA tracking data I had enough information at my fingertips to get into the
-        meat+potatoes of the question. Although the data was not always reliable, my findings pointed in the same
-        direction as my intuition. By tracking shots on subsequent possessions, I observed teams getting better less
-        contested shots on the possession following a midrange shot, and converting those opportunities more frequently.
-        If this holds, it demonstrates that midrange shots have at least some sort of value that other shots don't, and
-        it may prove they are undervalued like I think.
-
+        Suppose we have a set of data points
       </p>
-      <p>
-        Having access to Josh was probably the most valuable part of the class in truth. He really did an excellent job
-        in designing the course. It meshed well with the thoughts I'd been having independently that analyzing sports
-        should take as much creativity as it does to play them. I think a lot about encoding the logic and intuition of
-        basketball with the things I do on a daily basis for Concordia. The first office hours Josh held I was up there,
-        and ready to get into it. First thing he told me: OVS is bullshit (my words not his). For what it attempts to
-        capture, it is far too narrow in terms of the scope of data it takes into consideration. Incorporating closest
-        defender data is the obvious next step, but in its current form it can still give us some good information.
 
-      </p>
+      \[
+      \{(x_i,y_i)\}, \quad i=1,\dots,N
+      \]
 
       <p>
-        The change to OVS really was simple: divide the sum by 5 instead of subtracting 5. I think I literally realized
-        this as I was writing the formula on that chalkboard for Josh in that first conversation. It fixed one major
-        problem immediately; drastically re-shaping the distribution of values the stat spits out. Where values
-        previously could get exceedingly high, especially for centers, these values are now much more normalized. Yet it
-        still maintains the mathematical foundation of OVS. When I was first building the stat, I wanted to build it in
-        a way that was robust. Drawing from the data itself without excessive need for user input or weighting; almost
-        as an effort to make sure the essence of the information was able to be felt in the output. At the end of the
-        day, what I'm really doing is conveying information, and in sports particularly it's hard to capture the whole
-        picture. So we break it down into counting stats, or into play-by-play, or some combination of the two (tagged
-        event data). We really need to be on the continuum, we need to use data in a way that is faithful to the
-        inherent truth that it represents. That's my little diatribe for now, suffice to say I'm now more confident in
-        explaining OVS.
+        We aim to fit a polynomial of degree \(p\) to these points.
+        The polynomial can be expressed as
+      </p>
 
+      \[
+      y = a_0 + a_1 x + a_2 x^2 + \dots + a_p x^p
+      \]
 
+      <p>
+        For a given window centered on \(x_k\), we determine coefficients
+        \(a_0, a_1, \dots, a_p\) such that the polynomial fits the data
+        points in the window.
+      </p>
+
+      <p>
+        This is achieved by minimizing the sum of squared differences between
+        the observed values and the polynomial prediction.
+      </p>
+
+      \[
+      \min
+      \sum_{i=-m}^{m}
+      \left(
+      y_{k+i} -
+      \sum_{j=0}^{p} a_j x_{k+i}^{\,j}
+      \right)^2
+      \]
+
+      <p>
+        The window size is 2m + 1 centered at \( x_k\)
+      </p>
+      ---
+
+      <h3>Example</h3>
+
+      <p>
+        Consider a window size of 5 (\(m=2\)) and a polynomial degree of 2 (\(p=2\)).
+      </p>
+
+      <p>
+        The data points in the window are
+      </p>
+
+      \[
+      (x_{k-2},y_{k-2}),
+      (x_{k-1},y_{k-1}),
+      (x_k,y_k),
+      (x_{k+1},y_{k+1}),
+      (x_{k+2},y_{k+2})
+      \]
+
+      <p>
+        We fit the polynomial
+      </p>
+
+      \[
+      y = a_0 + a_1 x + a_2 x^2
+      \]
+
+      <p>
+        by minimizing
+      </p>
+
+      \[
+      \min
+      \sum_{i=-2}^{2}
+      \left(
+      y_{k+i} -
+      (a_0 + a_1 x_{k+i} + a_2 x_{k+i}^2)
+      \right)^2
+      \]
+
+      <p>
+        After determining the coefficients (for example using
+        <code>scipy.optimize</code>), the smoothed value at \(x_k\) is
+      </p>
+
+      \[
+      \hat{y}_k =
+      a_0 + a_1 x_k + a_2 x_k^2
+      \]
+
+      ---
+
+      <h3>Code Implementation</h3>
+
+      <pre><code class="language-python">
+def sg_filter(x, m, K=0):
+    # X = time window
+    # m = polynomial degree
+    # K = derivative order
+    mid = len(x)//2
+    # center the window around the midpoint
+    a = x - x[mid]
+    # construct powers of the centered variable
+    expa = [a**i for i in range(0, m+1)]
+    # design matrix (Vandermonde)
+    A = np.array(expa).T
+    # compute Moore-Penrose pseudo-inverse
+    Ai = np.linalg.pinv(A)
+    # each row corresponds to a filter kernel
+    return Ai[K]
+</code></pre>
+
+      <p>
+        The pseudo-inverse used above is
+      </p>
+
+      \[
+      A^+ = (A^T A)^{-1} A^T
+      \]
+
+      <p>
+        Each row of \(A^+\) corresponds to a set of filter weights.
+      </p>
+
+      <ul>
+        <li>\(K=0\): smoothing (estimate position)</li>
+        <li>\(K=1\): first derivative (velocity)</li>
+        <li>\(K=2\): second derivative (acceleration)</li>
+      </ul>
+
+      <p>
+        When the weights are dotted with the local window of \(y\)-values, <code
+          class="language-python">value = np.dot(weights, y_window)</code> ,the result is the smoothed or derivative
+        estimate at the center point.
+      </p>
+
+      <p>
+        Since tracking data tends to be noisy, and all data points are equally spaced (40 milliseconds apart), a
+        Savitzky-Golay filter is ideal for our uses. We utilize the additional benefit that the resulting
+        polynomial is differentiable to find instantaneous vertical acceleration of the ball in order to
+        determine shot times.
+      </p>
+
+      <h2>Application to Tracking Data</h2>
+      <p>
+        Applying an SG filter to tracking data, we fit a curve to the balls height as a function of game clock.
+        Here is the original implemtation to fix shot times with an example case.
+      </p>
+      <pre><code class="language-python">
+def correct_shots(game_shots, movement, events):
+  fixed_shots = pd.DataFrame(columns=game_shots.columns)
+  for ind, shot in game_shots.iterrows():
+    try:
+        event_id = shot["GAME_EVENT_ID"]
+        movement_around_shot = movement.loc[
+            movement["event_id"].isin([event_id, event_id - 1])
+        ].drop_duplicates(subset=["game_clock"])
+        game_clock_time = movement_around_shot.query("team_id == -1")[
+            "game_clock"
+        ].values
+        ball_height = movement_around_shot.query("team_id == -1")["radius"].values
+        size = 10
+        order = 3
+        params = (game_clock_time, ball_height, size, order)
+        position_smoothed = smooth(*params, deriv=0)
+        acceleration_smoothed = smooth(*params, deriv=2)
+        max_ind = np.argmax(position_smoothed)
+        shot_window = acceleration_smoothed[max(0, max_ind - 25) : max_ind]
+        shot_min_ind = np.argmin(shot_window)
+        shot_ind = max_ind - shot_min_ind
+        shot_time = game_clock_time[shot_ind]
+        quarter = movement_around_shot["quarter"].values[0]
+        movement_around_shot = movement_around_shot.query(
+            "game_clock == @shot_time"
+        )
+        shot["QUARTER"] = quarter
+        shot["SHOT_TIME"] = shot_time
+        shot["LOC_X"] = movement_around_shot.query("team_id == -1")["x_loc"].values[
+            0
+        ]
+        shot["LOC_Y"] = movement_around_shot.query("team_id == -1")["y_loc"].values[
+            0
+        ]
+    except Exception:
+        continue
+    # fixed_shots = fixed_shots.append(shot)
+    fixed_shots = pd.concat([fixed_shots, pd.DataFrame([shot])], ignore_index=True)
+  return fixed_shots
+      </code></pre>
+      <h3>Example:</h3>
+      <p>
+        We can observe that the legacy version of the function is able to correctly identify the moment when the ball
+        begins accelerating upwards towards the hoop. A visual confirmation from the <a href="https://youtu.be/f8lAcHg6kk0?si=ZUJXUtQOFQl_Yf4z9" target="_blank">game film</a> confirms this.
+      <br><br>
+      <img src="/assets/images/shot-times-example.png" class="responsive-img-article">
+      </p>
+      <h2>The Problem:</h2>
+      <p>
+        To see the problem with the legacy version of the function, lets look at the same graph for the very next
+        possession:
+        <br><br>
+        <img src="/assets/images/shot-times-example-bad.png" class="responsive-img-article">
+        The function returned the same value for shot time despite the second shot being taken nearly 15 seconds later
+        because the window of movement data extends from the previous possession! Because the signal from the first shot
+        is stronger, the function only sees that instead of the signal from the second shot. The astute among you may
+        have noticed that the original function considers data from the previous possession, so you would immediatly
+        suggest to simply filter for the specific event ID assosciated with the shot. That is good intuition, but it
+        will unfortunately we see that will not fully address the issue if we examine the tracking data. Below is a
+        sample of the tracking data from PHX@GSW, filtered for game clock = 704.59 in the first quarter:
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>index</th>
+            <th>event_id</th>
+            <th>game_clock</th>
+            <th>team_id</th>
+            <th>player_name</th>
+            <th>x_loc</th>
+            <th>y_loc</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>6666</td>
+            <td>2</td>
+            <td>704.59</td>
+            <td>-1</td>
+            <td>ball</td>
+            <td>-23.3061</td>
+            <td>157.13</td>
+          </tr>
+          <tr>
+            <td>9966</td>
+            <td>3</td>
+            <td>704.59</td>
+            <td>-1</td>
+            <td>ball</td>
+            <td>-23.3061</td>
+            <td>157.13</td>
+          </tr>
+
+        </tbody>
+      </table>
+      <br>
+      <p>
+        As you can see, the reason that the fix_shot_times won't work as intended is because the tracking data has
+        duplicate rows
+        which have the same values for game clock, but different values for event ID. Generally, this is actually good
+        because it could be useful to have information on the locations of players for large stretches of time
+        around each event, so that if examining a specific event you get information on the surrounding movement
       </p>
       <p>
-        Now, I can break down OVS to be even more granular. We could use 10, 15, 24, 100 different zones and still get a
-        sensible output. You could tailor it to any situation, or any combination of zones. I have a particular interest
-        in identifying zones to cluster by using the techniques we learned in class, but between watching film for
-        Concordia and finishing off my degree with some high-level math classes, I've been too busy. Once the season is
-        over I'll have a little more time on my hands to get back into it.
-
-
+        Our first thought may be to drop these duplicate rows that have the same value in the game_clock column and
+        call it a day. But like I said above, it could be beneficial to have info about movement before/after events.
+        Also there are stretches of the game where the shot clock stays the same but players are still moving
+        (inbounding plays etc…), and we definitely don't want to lose that information by unilaterally dropping
+        duplicate rows.
       </p>
-      <p>
-        At this point I will mention that my project on midrange shots led me down the rabbit-hole when it comes to
-        "gravity"in basketball. The conclusion I was reaching before I identified flaws in the data was that midrange
-        shots may have greater gravity because of their situation inside the swaths of empty space between the three
-        point line and the rim. Although it's on the back-burner for now, I wish to incorporate data-driven methods for
-        dynamical systems in an attempt to model basketball as a kind of 10-body problem. The goal being to approximate
-        the gravity that players have as they move around the court. Doing this would combine everything I have talked
-        about. The logic and rules of the game need to be baked into the construction of any system aimed at accurately
-        capturing player behavior.
 
-
-      </p>
-      <p>
-        I suppose that's all for now. I'm going back to Boston for Sloan in three days, and Concordia has our RSEQ
-        semi-final game in two days, and hopefully I'll be able to make it back to catch the final if we make it.
-        Shoutout Sami Jahan for 1,500 points, shoutout McGill for coming in last this year.
-
-
-      </p>
 
       <p>
         -Nick

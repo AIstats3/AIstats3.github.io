@@ -8,12 +8,17 @@
 }
 
 /* General Reset */
+mjx-container {
+  font-family: MJXZERO, MJXTEX !important;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Roboto', Arial, sans-serif;
 }
+
+
 
 /* Body */
 body {
@@ -21,6 +26,7 @@ body {
   color: var(--color-secondary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+    font-family: 'Roboto', Arial, sans-serif;
 }
 
 /* Header */
@@ -61,6 +67,18 @@ nav ul li a {
 nav ul li a:hover {
   text-decoration: underline;
 }
+a {
+  color:rgb(0, 166, 255)
+}
+pre {
+    display: inline-block;
+    background: #f4f4f4;
+    padding: 15px;
+    border-radius: 6px;
+    overflow-x: auto;
+    white-space: pre;
+}
+
 
 /* Sidebar */
 .sidebar {
