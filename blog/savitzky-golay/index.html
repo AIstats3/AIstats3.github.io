@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!--begin _includes/seo.html-->
+  <title>Blog - Nicholas LaMonica</title>
+  <meta name="description" content="Homepage for Nicholas Heichler LaMonica">
+  <meta name="author" content="Nicholas Heichler LaMonica">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Nicholas Heichler LaMonica">
+  <meta property="og:title" content="Blog">
+  <meta property="og:url" content="AIstats3.github.io/blog/">
+  <meta property="og:description" content="Homepage for Nicholas Heichler LaMonica">
+  <link rel="canonical" href="https://AIstats3.github.io/blog/savitzky-golay/"> <!--CHANGE THIS-->
+  <!--end _includes/seo.html-->
+
+  <!--Viewport include-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100..900&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Prism.js CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+  <!-- Prism.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <!-- Python support -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <!-- MathJax/LaTeX -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</head>
+
+<body>
+  <header class="header">
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/portfolio/">Portfolio</a></li>
+        <li><a href="/blog/">Blog</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <aside class="sidebar">
+      <ul>
+        <li><a href="https://www.linkedin.com/in/nicholas-lamonica-962004172" target="_blank"><i
+              class="fab fa-linkedin"></i>LinkedIn</a></li>
+        <li><a href="https://github.com/AIstats3" target="_blank"><i class="fab fa-github"></i>Github</a></li>
+        <li><a href="mailto:nicklamonica2001@gmail.com" target="_blank"><i class="fas fa-envelope"></i>Email</a></li>
+        <li><a href="/assets/docs/resume.pdf" target="_blank"><i class="fas fa-file-pdf"></i>Resume</a></li>
+      </ul>
+    </aside>
+
+    <div class="content">
+      <h1>Identifying NBA Shot Times Using Tracking Data</h1>
+      <h2>Data + Abstract</h2>
+      <p>
+        This article uses NBA tracking data provided by SportVU that can be found in this
+        <a href="https://github.com/sealneaward/nba-movement-data" target="_blank">github repository</a>. There are
+        other articles on my
+        website that discuss the use
+        and limitations of this data, but I will give a brief refresher.
+        It is 25 Hz tracking data that provides the \((x,y)\) locations of the 10 players on the court and the ball, the
+        height
+        of the ball
+        above the court is also provided. It comes pre-packaged with play-by-play data and shot logs similar to the ones
+        that can found using the NBA API <a
+          href="https://github.com/swar/nba_api/blob/master/src/nba_api/stats/endpoints/playbyplayv3.py"
+          target="_blank">here</a>.
+      </p>
+      <p><a href="/blog/fixing-nba-shots/">A follow up article discussing improvements to the methodology can be
+          found here</a>.</p>
+      <p>
+        The play-by-play data comes from live-scoring performed by statisticians during the game, and (as someone who
+        has
+        worked in live-scoring) I can attest that recording the precise time of events is <em>not</em> what you
+        are focused on in the middle of a game. Often times it takes a couple extra seconds to see the outcome of a shot
+        before the event is
+        officially recorded.
+        As such, this repository comes with setup to fix those reported shot times to the precise moment the ball leaves
+        the shooters hand. <em>The Problem: The built in setup function doesn't work.</em> Somewhat of an
+        exaggeration; inconsistent may be a better word. When the legacy
+        function works it works exactly as intended, but it doesn't always work. Duplicate shot times, duplicate shot
+        locations,... I've covered this in previous articles, so I will now continue to explaining how the
+        "fix_shot_times" builtin is designed to function.
+      </p>
+      <p>
+        If you don't like geeking out over math then feel free to skip this section after the next two sentences. In
+        summary:
+        the built-in function finds the shot time by identifying when the ball's vertical acceleration is greatest.
+        Makes sense, right? When a player takes a shot the ball quickly ascends, so if we find when that
+        ascent begins that would be the time the shot was taken. Now lets breakdown how this methodology is implemented
+        in practice.
+      </p>
+      <h1>The Savitzky-Golay Filter</h1>
+      <p>
+        The primary purpose of the Savitzky-Golay filter is to smooth noisy data without distorting the true signal.
+        Here's how it works.
+      </p>
+
+      <p>
+        Suppose we have a set of data points
+      </p>
+
+      \[
+      \{(x_i,y_i)\}, \quad i=1,\dots,N
+      \]
+
+      <p>
+        We aim to fit a polynomial of degree \(p\) to these points.
+        The polynomial can be expressed as
+      </p>
+
+      \[
+      y = a_0 + a_1 x + a_2 x^2 + \dots + a_p x^p
+      \]
+
+      <p>
+        For a given window centered on \(x_k\), we determine coefficients
+        \(a_0, a_1, \dots, a_p\) such that the polynomial fits the data
+        points in the window.
+      </p>
+
+      <p>
+        This is achieved by minimizing the sum of squared differences between
+        the observed values and the polynomial prediction.
+      </p>
+
+      \[
+      \min
+      \sum_{i=-m}^{m}
+      \left(
+      y_{k+i} -
+      \sum_{j=0}^{p} a_j x_{k+i}^{\,j}
+      \right)^2
+      \]
+
+      <p>
+        The window size is 2m + 1 centered at \( x_k\)
+      </p>
+      ---
+
+      <h3>Example</h3>
+
+      <p>
+        Consider a window size of 5 (\(m=2\)) and a polynomial degree of 2 (\(p=2\)).
+      </p>
+
+      <p>
+        The data points in the window are
+      </p>
+
+      \[
+      (x_{k-2},y_{k-2}),
+      (x_{k-1},y_{k-1}),
+      (x_k,y_k),
+      (x_{k+1},y_{k+1}),
+      (x_{k+2},y_{k+2})
+      \]
+
+      <p>
+        We fit the polynomial
+      </p>
+
+      \[
+      y = a_0 + a_1 x + a_2 x^2
+      \]
+
+      <p>
+        by minimizing
+      </p>
+
+      \[
+      \min
+      \sum_{i=-2}^{2}
+      \left(
+      y_{k+i} -
+      (a_0 + a_1 x_{k+i} + a_2 x_{k+i}^2)
+      \right)^2
+      \]
+
+      <p>
+        After determining the coefficients (for example using
+        <code>scipy.optimize</code>), the smoothed value at \(x_k\) is
+      </p>
+
+      \[
+      \hat{y}_k =
+      a_0 + a_1 x_k + a_2 x_k^2
+      \]
+
+      ---
+
+      <h3>Code Implementation</h3>
+
+      <pre><code class="language-python">
+def sg_filter(x, m, K=0):
+    # X = time window
+    # m = polynomial degree
+    # K = derivative order
+    mid = len(x)//2
+    # center the window around the midpoint
+    a = x - x[mid]
+    # construct powers of the centered variable
+    expa = [a**i for i in range(0, m+1)]
+    # design matrix (Vandermonde)
+    A = np.array(expa).T
+    # compute Moore-Penrose pseudo-inverse
+    Ai = np.linalg.pinv(A)
+    # each row corresponds to a filter kernel
+    return Ai[K]
+</code></pre>
+
+      <p>
+        The pseudo-inverse used above is
+      </p>
+
+      \[
+      A^+ = (A^T A)^{-1} A^T
+      \]
+
+      <p>
+        Each row of \(A^+\) corresponds to a set of filter weights.
+      </p>
+
+      <ul>
+        <li>\(K=0\): smoothing (estimate position)</li>
+        <li>\(K=1\): first derivative (velocity)</li>
+        <li>\(K=2\): second derivative (acceleration)</li>
+      </ul>
+
+      <p>
+        When the weights are dotted with the local window of \(y\)-values, <code
+          class="language-python">value = np.dot(weights, y_window)</code> ,the result is the smoothed or derivative
+        estimate at the center point.
+      </p>
+
+      <p>
+        Since tracking data tends to be noisy, and all data points are equally spaced (40 milliseconds apart), a
+        Savitzky-Golay filter is ideal for our uses. We utilize the additional benefit that the resulting
+        polynomial is differentiable to find instantaneous vertical acceleration of the ball in order to
+        determine shot times.
+      </p>
+
+      <h2>Application to Tracking Data</h2>
+      <p>
+        Applying an SG filter to tracking data, we fit a curve to the balls height as a function of game clock. Then the
+        greatest moment of vertical acceleration is taken as the shot time, and the \((x,y)\) coordinates of the ball at
+        that time are taken as the shot location.
+        Here is the original implemtation to fix shot times with an example case.
+      </p>
+      <pre><code class="language-python">
+def correct_shots(game_shots, movement, events):
+  fixed_shots = pd.DataFrame(columns=game_shots.columns)
+  for ind, shot in game_shots.iterrows():
+    try:
+        event_id = shot["GAME_EVENT_ID"]
+        movement_around_shot = movement.loc[
+            movement["event_id"].isin([event_id, event_id - 1])
+        ].drop_duplicates(subset=["game_clock"])
+        game_clock_time = movement_around_shot.query("team_id == -1")[
+            "game_clock"
+        ].values
+        ball_height = movement_around_shot.query("team_id == -1")["radius"].values
+        size = 10
+        order = 3
+        params = (game_clock_time, ball_height, size, order)
+        position_smoothed = smooth(*params, deriv=0)
+        acceleration_smoothed = smooth(*params, deriv=2)
+        max_ind = np.argmax(position_smoothed)
+        shot_window = acceleration_smoothed[max(0, max_ind - 25) : max_ind]
+        shot_min_ind = np.argmin(shot_window)
+        shot_ind = max_ind - shot_min_ind
+        shot_time = game_clock_time[shot_ind]
+        quarter = movement_around_shot["quarter"].values[0]
+        movement_around_shot = movement_around_shot.query(
+            "game_clock == @shot_time"
+        )
+        shot["QUARTER"] = quarter
+        shot["SHOT_TIME"] = shot_time
+        shot["LOC_X"] = movement_around_shot.query("team_id == -1")["x_loc"].values[
+            0
+        ]
+        shot["LOC_Y"] = movement_around_shot.query("team_id == -1")["y_loc"].values[
+            0
+        ]
+    except Exception:
+        continue
+    # fixed_shots = fixed_shots.append(shot)
+    fixed_shots = pd.concat([fixed_shots, pd.DataFrame([shot])], ignore_index=True)
+  return fixed_shots
+      </code></pre>
+      <h3>Example:</h3>
+      <p>
+        We can observe that the legacy version of the function is able to correctly identify the moment when the ball
+        begins accelerating upwards towards the hoop. A visual confirmation from the <a
+          href="https://youtu.be/f8lAcHg6kk0?si=ZUJXUtQOFQl_Yf4z9" target="_blank">game film</a> confirms this.
+        <br><br>
+        <img src="/assets/images/shot-times-example.png" class="responsive-img-article">
+      </p>
+      <h2>The Problem:</h2>
+      <p>
+        To see the problem with the legacy version of the function, lets look at the same graph for the very next
+        possession:
+        <br><br>
+        <img src="/assets/images/shot-times-example-bad.png" class="responsive-img-article">
+        The function returned the same value for shot time despite the second shot being taken nearly 15 seconds later
+        because the window of movement data extends from the previous possession! Because the signal from the first shot
+        is stronger, the function only sees that instead of the signal from the second shot. The astute among you may
+        have noticed that the original function considers data from the previous possession, so you would immediatly
+        suggest to simply filter for the specific event ID assosciated with the shot. That is good intuition, but it
+        will unfortunately we see that will not fully address the issue if we examine the tracking data. Below is a
+        sample of the tracking data from PHX@GSW, filtered for game clock = 704.59 in the first quarter:
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>index</th>
+            <th>event_id</th>
+            <th>game_clock</th>
+            <th>team_id</th>
+            <th>player_name</th>
+            <th>x_loc</th>
+            <th>y_loc</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>6666</td>
+            <td>2</td>
+            <td>704.59</td>
+            <td>-1</td>
+            <td>ball</td>
+            <td>-23.3061</td>
+            <td>157.13</td>
+          </tr>
+          <tr>
+            <td>9966</td>
+            <td>3</td>
+            <td>704.59</td>
+            <td>-1</td>
+            <td>ball</td>
+            <td>-23.3061</td>
+            <td>157.13</td>
+          </tr>
+
+        </tbody>
+      </table>
+      <br>
+      <p>
+        As we can see, the reason that the fix_shot_times won't work as intended is because the tracking data has
+        duplicate rows
+        which have the same values for game clock, but different values for event ID. Generally, this is actually good
+        because it could be useful to have information on the locations of players for large stretches of time
+        around each event, so that if examining a specific event you get information on the surrounding movement
+      </p>
+      <p>
+        Our first thought may be to drop these duplicate rows that have the same value in the game_clock column and
+        call it a day. But like I said above, it could be beneficial to have info about movement before/after events.
+        Also there are stretches of the game where the shot clock stays the same but players are still moving
+        (inbounding plays etc…), and we definitely don't want to lose that information by unilaterally dropping
+        duplicate rows. In a <a href="/blog/fixing-nba-shots/">future article</a> I will explore how to improve this
+        methodology.
+      </p>
+
+
+
+      <p>
+        -Nick
+      </p>
+    </div>
+  </main>
+</body>
+
+</html>

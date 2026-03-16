@@ -68,302 +68,219 @@
     <div class="content">
       <h1>Fixing NBA Shot Times Using Tracking Data</h1>
       <p>
-        This article uses NBA tracking data provided by SportVU that can be found in this
-        <a href="https://github.com/sealneaward/nba-movement-data" target="_blank">github repository</a>. There are
-        other articles on my
-        website that discuss the use
-        and limitations of this data, so I will only give a brief refresher.
-        It is 25 Hz that provides the x,y location of the 10 players on the court and the ball, the height of the ball
-        of the court is also provided. It comes pre-packaged with play-by-play data and shot logs similar to the ones
-        that can found using the NBA API <a
-          href="https://github.com/swar/nba_api/blob/master/src/nba_api/stats/endpoints/playbyplayv3.py"
-          target="_blank">here</a>.
-      </p>
-      <p>
-        The play-by-play data comes from live-scoring performed by statisticians during the game, and (as someone who
-        has
-        worked in live-scoring) I can attest that recording the precise time of events is <em>not</em> what you
-        are focused on in the middle of a game. Often times it takes a couple extra seconds to see the outcome of a shot before the event is
-        officially recorded.
-        As such, this repository comes with setup to fix those reported shot times to the precise moment the ball leaves
-        the shooters hand. <em>The Problem: The built in setup function doesn't work.</em> Somewhat of an
-        exaggeration; inconsistent may be a better word. When the legacy
-        function works it works exactly as intended, but it doesn't always work. Duplicate shot times, duplicate shot
-        locations,... I've covered this in previous articles, so I will now continue to explaining how the
-        "fix_shot_times" builtin is designed to function.
-      </p>
-      <p>
-        If you don't like geeking out over math then feel free to skip this section after the next two sentences. In
-        summary:
-        the built-in function finds the shot time by identifying when the ball's vertical acceleration is greatest.
-        Makes sense, right? When a player takes a shot the ball quickly ascends, so if we find when that
-        ascent begins that would be the time the shot was taken. Now lets breakdown how this methodology is implemented
-        in practice.
-      </p>
-      <h1>The Savitzky-Golay Filter</h1>
-      <p>
-        The primary purpose of the Savitzky-Golay filter is to smooth noisy data. Here's how it works.
+        This article is follow-up to <a href="/blog/savitzky-golay/">this article</a> which explores how to identify
+        precise shot times using SportVU NBA tracking data. For background on the methods and
+        limitations I will be addressing read that article first.
       </p>
 
+      <h1>Solutions:</h1>
       <p>
-        Suppose we have a set of data points
+        I will provide augmented methods for finding shot times. They are as follows:
+      </p>
+      <h2>Method 1: User Defined Time Window</h2>
+      <p>
+        In this method we impose a time window around the officially reported shot time and only consider the movement
+        within that window. We study the data to construct an appropriate window, and we can adjust our window to fine
+        tune. We then apply the traditional Savitzky-Golay method to identify the greatest moment of vertical
+        acceleration.
+      </p>
+      <p>
+        Reported shot time, \(R\), is often the time the ball went all the way through the net on a made shot, or the
+        time the rebound is gathered on a missed shot
+        (really more like the time the ball hits the ground after the shot for a made shot). Thus we only need to
+        consider a one-sided time window of \(t\) seconds before the reported shot time: \([R, R+t]\).
+      </p>
+      <p>
+        After trial and error, I found that looking at the prior \(t=6\) seconds before reported shot time is a large
+        enough window to ensure that the actual moment of the shot is in the window while excluding erroneous movement.
+      </p>
+      <h3>Positives</h3>
+      <p>
+        This method directly addresses the primary issue of the legacy version by removing movement data of previous
+        possessions from consideration.
+      </p>
+      <h3>Limitations</h3>
+      <p>
+        How will this method perform when there are multiple shots within the defined time window (eg. putbacks,
+        tip-ins..)? What is the reported shot time is significantly inaccurate and the window we construct does not
+        contain the data we need? Hint: we will fail to find, and the function will return an empty row.
       </p>
 
+      <h2>Method 2: Moment Closest to Reported Location</h2>
+      <p>
+        Rather than using the Savitzky-Golay filter, this straight-forward method, we look at the ball's location
+        throughout a play and compare it to the reported
+        shot location \((x_r, y_r)\) from the provided shot logs. Then, we simply take the information \( (t_i, x_i,
+        y_i) \) of the moment, \(i\), when the ball is closest
+        to that reported location.
+      </p>
+      <p>
+        We find \(i\) such that we minimize the expression
+      </p>
       \[
-      \{(x_i,y_i)\}, \quad i=1,\dots,N
+      D_i = \sqrt{(x_r - x_i)^2 + (y_r - y_i)^2}
       \]
-
+      <h3>Positives</h3>
       <p>
-        We aim to fit a polynomial of degree \(p\) to these points.
-        The polynomial can be expressed as
+        No loss of data (ie all rows/shots accounted for) since S-G filter is not applied.
+        <br>
+        Keeps shot locations consistently close to reported. Other methods have a tendency to significantly alter shot
+        locations.
+      </p>
+      <h3>Limitations</h3>
+      <p>
+        Does not limit time window. If we do not restrict our time window, then we are considering movement that may
+        belong to other events. Since the data is converted to be one-sided (half-court), the moment when the ball is
+        closest to the reported shot location may come at the wrong time.<br>
+        Ex: Finding shot time for a layup by team A. If the prior shot is a made
+        shot by team B, then the ball is close to the reported shot location directly after the prior made shot.<br>
+        In another case the ball may pass through the location of the shot earlier in the possession (ex: post up, kick
+        out, driving shot near the rim; the ball is near the location of the shot multiple times during the possession).
+      </p>
+      <h3>Method 2.5: Window Based on Proximity to Reported Shot Location</h3>
+      <p>
+        In this method we impose a condition that the ball must be within some user defined distance from the reported
+        shot location. Then we run the original Savitzky-Golay method on that subset of the rows. This method seems to
+        be an ideal mix of the previous two methods. However, consider the following limitation:
+      </p>
+      <p>
+        Since this method filters based on a condition, it does not ensure a continuous time window. This is a major
+        complication because the Savitzky-Golay filter needs to be fed continuous time-series data.
+      </p>
+      <h2>Method 3: Time Window Around Moment Closest to Reported Shot Location</h2>
+      <p>
+        Uses the same procedure as method 2 to find the moment the ball is closest to shot locations, then implements
+        SG-filter method on a time window of \([t-1, t+3] \) seconds around that moment.
+      </p>
+      <h3>Positives:</h3>
+      <p>
+        Most effective method for identifying and constraining the time window that the shot is within.<br>
+        Uses SG-filter method to accurately identify precise shot time.
+      </p>
+      <h3>Limitations:</h3>
+      <p>
+        The more restrictive we make our windows, the greater the chance that we miss the moment of the shot. This leads
+        to missing rows in output. The legacy function has a perfect success rate (eg it gives a fixed version of each
+        row, but many of those rows are duplicates/inaccurate). The methods we are using (so far) have failed some rows,
+        and this leads to loss of data (rows where the methods fail don't show up in the output dataframe).
       </p>
 
-      \[
-      y = a_0 + a_1 x + a_2 x^2 + \dots + a_p x^p
-      \]
-
+      <h1>Results:</h1>
       <p>
-        For a given window centered on \(x_k\), we determine coefficients
-        \(a_0, a_1, \dots, a_p\) such that the polynomial fits the data
-        points in the window.
+        Lets look at how the different methods I have presented compare across a number of shots. I will continue to use
+        data from the Phoenix @ Golden State game that I used in the previous article. Below are charts of the first
+        eight
+        shots from that game with the shot times that each method returned marked on the x-axis. The distance from the
+        original shot location is also included as an alternate measure of accuracy.<br>
       </p>
-
+      <img src="/assets/images/method-result-graphs.png" class="responsive-img-article">
       <p>
-        This is achieved by minimizing the sum of squared differences between
-        the observed values and the polynomial prediction.
-      </p>
-
-      \[
-      \min
-      \sum_{i=-m}^{m}
-      \left(
-      y_{k+i} -
-      \sum_{j=0}^{p} a_j x_{k+i}^{\,j}
-      \right)^2
-      \]
-
-      <p>
-        The window size is 2m + 1 centered at \( x_k\)
-      </p>
-      ---
-
-      <h3>Example</h3>
-
-      <p>
-        Consider a window size of 5 (\(m=2\)) and a polynomial degree of 2 (\(p=2\)).
-      </p>
-
-      <p>
-        The data points in the window are
-      </p>
-
-      \[
-      (x_{k-2},y_{k-2}),
-      (x_{k-1},y_{k-1}),
-      (x_k,y_k),
-      (x_{k+1},y_{k+1}),
-      (x_{k+2},y_{k+2})
-      \]
-
-      <p>
-        We fit the polynomial
-      </p>
-
-      \[
-      y = a_0 + a_1 x + a_2 x^2
-      \]
-
-      <p>
-        by minimizing
-      </p>
-
-      \[
-      \min
-      \sum_{i=-2}^{2}
-      \left(
-      y_{k+i} -
-      (a_0 + a_1 x_{k+i} + a_2 x_{k+i}^2)
-      \right)^2
-      \]
-
-      <p>
-        After determining the coefficients (for example using
-        <code>scipy.optimize</code>), the smoothed value at \(x_k\) is
-      </p>
-
-      \[
-      \hat{y}_k =
-      a_0 + a_1 x_k + a_2 x_k^2
-      \]
-
-      ---
-
-      <h3>Code Implementation</h3>
-
-      <pre><code class="language-python">
-def sg_filter(x, m, K=0):
-    # X = time window
-    # m = polynomial degree
-    # K = derivative order
-    mid = len(x)//2
-    # center the window around the midpoint
-    a = x - x[mid]
-    # construct powers of the centered variable
-    expa = [a**i for i in range(0, m+1)]
-    # design matrix (Vandermonde)
-    A = np.array(expa).T
-    # compute Moore-Penrose pseudo-inverse
-    Ai = np.linalg.pinv(A)
-    # each row corresponds to a filter kernel
-    return Ai[K]
-</code></pre>
-
-      <p>
-        The pseudo-inverse used above is
-      </p>
-
-      \[
-      A^+ = (A^T A)^{-1} A^T
-      \]
-
-      <p>
-        Each row of \(A^+\) corresponds to a set of filter weights.
-      </p>
-
-      <ul>
-        <li>\(K=0\): smoothing (estimate position)</li>
-        <li>\(K=1\): first derivative (velocity)</li>
-        <li>\(K=2\): second derivative (acceleration)</li>
-      </ul>
-
-      <p>
-        When the weights are dotted with the local window of \(y\)-values, <code
-          class="language-python">value = np.dot(weights, y_window)</code> ,the result is the smoothed or derivative
-        estimate at the center point.
-      </p>
-
-      <p>
-        Since tracking data tends to be noisy, and all data points are equally spaced (40 milliseconds apart), a
-        Savitzky-Golay filter is ideal for our uses. We utilize the additional benefit that the resulting
-        polynomial is differentiable to find instantaneous vertical acceleration of the ball in order to
-        determine shot times.
-      </p>
-
-      <h2>Application to Tracking Data</h2>
-      <p>
-        Applying an SG filter to tracking data, we fit a curve to the balls height as a function of game clock.
-        Here is the original implemtation to fix shot times with an example case.
+        I intentionally chose to present consecutive shots to shine light on the strenght and weaknesses of each method.
+        We see that the methods that only rely on a shot window or on proximity to reported location are prone to errors
+        in much the same way that the legacy function does.
+        <em>Method 3</em> successfully filters out this noise, but is slightly my inaccurate when it comes to actually
+        identifying shot time. Despite this inaccuracy it seems to be the most effective method for identifying shot
+        times. Here is the code for the third method:
       </p>
       <pre><code class="language-python">
-def correct_shots(game_shots, movement, events):
+def correct_shotsv3(game_shots, movement, events):
   fixed_shots = pd.DataFrame(columns=game_shots.columns)
   for ind, shot in game_shots.iterrows():
-    try:
-        event_id = shot["GAME_EVENT_ID"]
-        movement_around_shot = movement.loc[
-            movement["event_id"].isin([event_id, event_id - 1])
-        ].drop_duplicates(subset=["game_clock"])
-        game_clock_time = movement_around_shot.query("team_id == -1")[
-            "game_clock"
-        ].values
-        ball_height = movement_around_shot.query("team_id == -1")["radius"].values
-        size = 10
-        order = 3
-        params = (game_clock_time, ball_height, size, order)
-        position_smoothed = smooth(*params, deriv=0)
-        acceleration_smoothed = smooth(*params, deriv=2)
-        max_ind = np.argmax(position_smoothed)
-        shot_window = acceleration_smoothed[max(0, max_ind - 25) : max_ind]
-        shot_min_ind = np.argmin(shot_window)
-        shot_ind = max_ind - shot_min_ind
-        shot_time = game_clock_time[shot_ind]
-        quarter = movement_around_shot["quarter"].values[0]
-        movement_around_shot = movement_around_shot.query(
-            "game_clock == @shot_time"
-        )
-        shot["QUARTER"] = quarter
-        shot["SHOT_TIME"] = shot_time
-        shot["LOC_X"] = movement_around_shot.query("team_id == -1")["x_loc"].values[
-            0
-        ]
-        shot["LOC_Y"] = movement_around_shot.query("team_id == -1")["y_loc"].values[
-            0
-        ]
-    except Exception:
-        continue
-    # fixed_shots = fixed_shots.append(shot)
-    fixed_shots = pd.concat([fixed_shots, pd.DataFrame([shot])], ignore_index=True)
+      try:
+          event_id = shot["GAME_EVENT_ID"]
+          original_time = shot["MINUTES_REMAINING"] * 60 + shot["SECONDS_REMAINING"]
+          x_loc_original = shot["LOC_X"]
+          y_loc_original = shot["LOC_Y"]
+
+          ##Refine initial time window to consider as in Method 1
+          movement_around_shot = movement.loc[
+              (movement["event_id"].isin([event_id, event_id - 1]))
+              & (movement["game_clock"] <= original_time + 6)
+              & (movement["game_clock"] >= original_time - 2)
+          ].drop_duplicates(subset=["game_clock"])
+
+          ##Calculate distance from ball to original shot location
+          movement_around_shot["ball_dist_from_shot"] = movement_around_shot.apply(
+              lambda row: euclidean(
+                  (row["x_loc"], row["y_loc"]),
+                  (x_loc_original, y_loc_original),
+              )
+              if row["team_id"] == -1
+              else np.nan,
+              axis=1,
+          )
+          min_dist_ind = movement_around_shot.loc[movement_around_shot["game_clock"] <= original_time+6]["ball_dist_from_shot"].idxmin()
+          min_dist_time = movement_around_shot.loc[min_dist_ind, "game_clock"]
+
+          ##Limit window to consider movement around time when ball is closest to reported shot location
+          movement_around_shot = movement_around_shot.loc[
+              (movement_around_shot["game_clock"] <= min_dist_time + 3)
+              & (movement_around_shot["game_clock"] >= min_dist_time - 1)
+          ].drop_duplicates(subset=["game_clock"])
+
+          game_clock_time = movement_around_shot.query("team_id == -1")[
+              "game_clock"
+          ].values
+          ball_height = movement_around_shot.query("team_id == -1")["radius"].values
+
+          ##Implement Savitzky-Golay filter to find moment of greatest vertical acceleration
+          size = 10
+          order = 3
+          params = (game_clock_time, ball_height, size, order)
+
+          position_smoothed = smooth(*params, deriv=0)
+          acceleration_smoothed = smooth(*params, deriv=2)
+          max_ind = np.argmax(position_smoothed)
+          shot_window = acceleration_smoothed[max(0, max_ind - 25) : max_ind]
+          shot_min_ind = np.argmin(shot_window)
+          shot_ind = max_ind - shot_min_ind
+          shot_time = game_clock_time[shot_ind]
+
+          quarter = movement_around_shot["quarter"].values[0]
+          movement_around_shot = movement_around_shot.query(
+              "game_clock == @shot_time"
+          )
+          shot["QUARTER"] = quarter
+          shot["SHOT_TIME"] = shot_time
+          shot["LOC_X"] = movement_around_shot.query("team_id == -1")["x_loc"].values[
+              0
+          ]
+          shot["LOC_Y"] = movement_around_shot.query("team_id == -1")["y_loc"].values[
+              0
+          ]
+          shot["ORIGINAL_TIME"] = original_time
+          shot["LOC_X_ORIGINAL"] = x_loc_original
+          shot["LOC_Y_ORIGINAL"] = y_loc_original
+          shot["DIST_FROM_ORIGINAL"] = euclidean(
+              (shot["LOC_X"], shot["LOC_Y"]), (x_loc_original, y_loc_original)
+          )
+      except Exception:
+          print(f"V3 Error processing shot with event_id {shot['GAME_EVENT_ID']}")
+          continue
+
+      fixed_shots = pd.concat([fixed_shots, pd.DataFrame([shot])], ignore_index=True)
+
   return fixed_shots
       </code></pre>
-      <h3>Example:</h3>
       <p>
-        We can observe that the legacy version of the function is able to correctly identify the moment when the ball
-        begins accelerating upwards towards the hoop. A visual confirmation from the <a href="https://youtu.be/f8lAcHg6kk0?si=ZUJXUtQOFQl_Yf4z9" target="_blank">game film</a> confirms this.
-      <br><br>
-      <img src="/assets/images/shot-times-example.png" class="responsive-img-article">
+        As a final consideration. Examine how each method alters the locations of the shots:
       </p>
-      <h2>The Problem:</h2>
+      <img src="/assets/images/shots-fixed-locations.png" class="responsive-img-article">
       <p>
-        To see the problem with the legacy version of the function, lets look at the same graph for the very next
-        possession:
-        <br><br>
-        <img src="/assets/images/shot-times-example-bad.png" class="responsive-img-article">
-        The function returned the same value for shot time despite the second shot being taken nearly 15 seconds later
-        because the window of movement data extends from the previous possession! Because the signal from the first shot
-        is stronger, the function only sees that instead of the signal from the second shot. The astute among you may
-        have noticed that the original function considers data from the previous possession, so you would immediatly
-        suggest to simply filter for the specific event ID assosciated with the shot. That is good intuition, but it
-        will unfortunately we see that will not fully address the issue if we examine the tracking data. Below is a
-        sample of the tracking data from PHX@GSW, filtered for game clock = 704.59 in the first quarter:
+        We can observe that the inaccuracy assosciated with Method 3 significantly impacts the shot locations. I think
+        the best way to do it would be to take the time from the advanced methods, Method 3 in particular, but use the
+        original reported location since
+        precise shot locations are super important in the grand scheme of things.
       </p>
-      <table>
-        <thead>
-          <tr>
-            <th>index</th>
-            <th>event_id</th>
-            <th>game_clock</th>
-            <th>team_id</th>
-            <th>player_name</th>
-            <th>x_loc</th>
-            <th>y_loc</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>6666</td>
-            <td>2</td>
-            <td>704.59</td>
-            <td>-1</td>
-            <td>ball</td>
-            <td>-23.3061</td>
-            <td>157.13</td>
-          </tr>
-          <tr>
-            <td>9966</td>
-            <td>3</td>
-            <td>704.59</td>
-            <td>-1</td>
-            <td>ball</td>
-            <td>-23.3061</td>
-            <td>157.13</td>
-          </tr>
-
-        </tbody>
-      </table>
-      <br>
+      <h2>Next Steps:</h2>
       <p>
-        As you can see, the reason that the fix_shot_times won't work as intended is because the tracking data has
-        duplicate rows
-        which have the same values for game clock, but different values for event ID. Generally, this is actually good
-        because it could be useful to have information on the locations of players for large stretches of time
-        around each event, so that if examining a specific event you get information on the surrounding movement
-      </p>
-      <p>
-        Our first thought may be to drop these duplicate rows that have the same value in the game_clock column and
-        call it a day. But like I said above, it could be beneficial to have info about movement before/after events.
-        Also there are stretches of the game where the shot clock stays the same but players are still moving
-        (inbounding plays etc…), and we definitely don't want to lose that information by unilaterally dropping
-        duplicate rows.
+        The purpose of this experiment was to define a methodology to identify shot times using NBA tracking data.
+        Having accurate data in necassary to perform accurate analysis. In my case, I wanted to find the closest
+        defender on each shot. Using this closest defender data I aim to analyze shot quality. Then I will integrate
+        lineup rotation data from the NBA API to calculate on/off statistics for closest defender. This will give me an
+        idea of what players contribute to good offense through their impact on the shots that their teammates get when
+        they are on the court. All in the pursuit of qualifying the gravity that players have, how they contort
+        opposiung defenses through their shooting and movement. 
       </p>
 
 
