@@ -119,14 +119,16 @@
         shot's location, contest level and result. To record shot locations I partition the court into nine zones and
         write z followed by the zone's code. I record the contest level, which I determine visually using criteria from
         the Concordia coaching staff, by writing a c then contest code: wide-open (c1), open (c2), contested (c3),
-        heavily-contested (c4). Then if the shot is missedI append an “m” to the string. For example: “c3z1m” is a
+        heavily-contested (c4). Then if the shot is missed I append an “m” to the string. For example: “c3z1m” is a
         contested attempt within the restricted area that is missed, or “c2z5” is an open left corner 3 made.
         <em>Event_type</em>
-        records context on the shot, ie “catch and shoot”, “drive”, “stepback”, etc… Keeping track of this data enables
+        records context on the shot, ie “catch and shoot”, “drive”, “stepback”, etc… <br>Keeping track of this data
+        enables
         me to create quick shot charts to measure efficieny and shot quality:
       </p>
       <div style="display: flex; gap: 20px; justify-content: center;">
-        <img src="/assets/images/example-shot-chart.png" class="responsive-img-article" style="flex: 1; max-width: 45%;">
+        <img src="/assets/images/example-shot-chart.png" class="responsive-img-article"
+          style="flex: 1; max-width: 45%;">
         <img src="/assets/images/shot-zones.png" class="responsive-img-article" style="flex: 1; max-width: 45%;">
       </div>
       <h2>Methodology</h2>
@@ -136,11 +138,12 @@
         that player is on the court then repeating the process for when the player is off the court and subtracting the
         results. This provides a good baseline assessment of on/off team shot quality. Next we want to analyze impact on
         the team, so we exclude shots that were taken by the player we are computing the statistic for. This helps
-        eliminate noise for players who take a lot of contested shots, and shows their impact on others.
+        eliminate noise for players who take a lot of contested shots, and highlights their impact on others.
       </p>
       <p>
         Finally we want to examine jump shooting specifically since the large majority of attempts near the rim are
-        contested, and this trend will remain the same across all players. To this end, we exclude shots in zone one and
+        contested, and this trend will remain the same across all players. To this end, we exclude shots around the
+        restricted area and
         repeat the processes above. What we are left with is the percentage change in attempt% across each contest level
         for all jump shots the players teammates took while they were on/off the court.
       </p>
@@ -150,7 +153,8 @@
         considered. Since the attempt% numbers are a change in frequency of shots across contest levels, the differences
         sum to zero. For privacy and competition's sake, I have anonymized the players' names. We interpret this data by
         saying: when Player A was on the court, the proportion of his teammates' shots that were wide-open decreased by
-        3.54% and the proportion of shots that were heavily contested increased by 4.45%.
+        3.54% and the proportion of shots that were heavily contested increased by 4.45%, but 3-point field goal
+        percentage was 3.58% better.
       </p>
       <iframe
         src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRKmAN09Xw7gRg6FkYbk0WuCoIFmn3nV0vs4IpRdg_v3V4iotvNreJlzUGrpx8HWnuBloz2yGOxg3-X/pubhtml?gid=971620846&single=true"
