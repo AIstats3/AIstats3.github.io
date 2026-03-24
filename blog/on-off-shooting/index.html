@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!--begin _includes/seo.html-->
+  <title>Blog - Nicholas LaMonica</title>
+  <meta name="description" content="Homepage for Nicholas Heichler LaMonica">
+  <meta name="author" content="Nicholas Heichler LaMonica">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Nicholas Heichler LaMonica">
+  <meta property="og:title" content="Blog">
+  <meta property="og:url" content="AIstats3.github.io/blog/">
+  <meta property="og:description" content="Homepage for Nicholas Heichler LaMonica">
+  <link rel="canonical" href="https://AIstats3.github.io/blog/on-off-shooting/"> <!--CHANGE THIS-->
+  <!--end _includes/seo.html-->
+
+  <!--Viewport include-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100..900&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Prism.js CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+  <!-- Prism.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <!-- Python support -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <!-- MathJax/LaTeX -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</head>
+
+<body>
+  <header class="header">
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/portfolio/">Portfolio</a></li>
+        <li><a href="/blog/">Blog</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <aside class="sidebar">
+      <ul>
+        <li><a href="https://www.linkedin.com/in/nicholas-lamonica-962004172" target="_blank"><i
+              class="fab fa-linkedin"></i>LinkedIn</a></li>
+        <li><a href="https://github.com/AIstats3" target="_blank"><i class="fab fa-github"></i>Github</a></li>
+        <li><a href="mailto:nicklamonica2001@gmail.com" target="_blank"><i class="fas fa-envelope"></i>Email</a></li>
+        <li><a href="/assets/docs/resume.pdf" target="_blank"><i class="fas fa-file-pdf"></i>Resume</a></li>
+      </ul>
+    </aside>
+
+    <div class="content">
+      <h1>On-Off Contested Shooting Impact</h1>
+      <h3>Next Article: Deep dive on player archetypes using the data generated here</h3>
+      <p>
+        How should we measure playmaking in basketball? The ability to get teammates good shots can be as valuable as
+        scoring the ball yourself, but assists numbers only capture part of the picture. They don't capture the
+        intangible ability of a point guard to manipulate the defense or the way a center can force a defense to
+        contract with the threat of post scoring. Do traditional “floor-stretchers” really provide spacing the way we
+        have been led to believe? What <em>is</em> “gravity”, and can we quantify it? The analytics world has started to
+        catch up
+        to these questions with the advancement of tracking data, but most attempts at capturing these phenomena tend to
+        be math-forward and hard to interpret. Coaches may have an intuitive sense of how players impact their
+        teammates, but how can we as analysts show them data to back those feelings. I encountered this while
+        self-scouting this season, and I have found an uncomplicated solution that is an extension of an existing,
+        accepted technique: on/off impact metrics.
+      </p>
+      <p>
+        On/Off statistics have become widely utilized in basketball analytics to compare how a team performs with a
+        player on the court versus when they are on the bench. Often you will see these statistics in relation to a
+        team's offensive, defensive, and net ratings, and across a sufficient sample this is indeed a very powerful tool
+        for assessing player impact. However, on/off statistics can be applied to all indicators of team performance.
+        Assessing on/off impact across rebounding, turnovers, defensive FG%, and other statistics has been instrumental
+        in my work with the Concordia University coaching staff. We use this data to assess how our players affect play
+        style, and armed with that information we can make strategic substitutions based on team needs across in-game
+        situations.
+      </p>
+      <p>
+        Making on/off statistics for box-score stats available has become common-place in the analytics world, even
+        though their team rating counterparts remain the most popular of these metrics. With basic play-by-play data
+        these comparisons are relatively easy to complete. This season working with Concordia I decided to take this a
+        step further. Since I collect data on how contested shots are, I figured I would be able to apply this process
+        to assess player impact on shot quality.
+      </p>
+      <h2>Data</h2>
+      <p>
+        The data that I will be using for this is the data that I collect and use for the Concordia team, which is
+        play-by-play in the form of csv files with each row associated with an event. However, I don't record assists,
+        rebounds or fouls: only turnovers, shots, and substitutions get an independent row, with other contextual
+        statistics recorded in a column for additional notes. The columns of each row are <em>quarter, time,
+          possession_id,
+          player, event, event_type, shotclock, set, additional_tags, and lineup</em>. This provides me with a log of
+        every
+        possession, the shots taken, the plays that were run, and how the possession ended (either in a missed/made shot
+        or a turnover).
+      </p>
+      <p>
+        Since this exercise concerns shooting data, here's a detailed breakdown of the data I collect for shots
+        specifically. Obviously the <em>player</em> column contains the number of the player who took the shot, with a
+        negative
+        sign preceding the number if it was taken by Concordia's opponent. <em>Event</em> contains a string: the code
+        for the
+        shot's location, contest level and result. To record shot locations I partition the court into nine zones and
+        write z followed by the zone's code. I record the contest level, which I determine visually using criteria from
+        the Concordia coaching staff, by writing a c then contest code: wide-open (c1), open (c2), contested (c3),
+        heavily-contested (c4). Then if the shot is missedI append an “m” to the string. For example: “c3z1m” is a
+        contested attempt within the restricted area that is missed, or “c2z5” is an open left corner 3 made.
+        <em>Event_type</em>
+        records context on the shot, ie “catch and shoot”, “drive”, “stepback”, etc… Keeping track of this data enables
+        me to create quick shot charts to measure efficieny and shot quality:
+      </p>
+      <div style="display: flex; gap: 20px; justify-content: center;">
+        <img src="/assets/images/example-shot-chart.png" class="responsive-img-article" style="flex: 1; max-width: 45%;">
+        <img src="/assets/images/shot-zones.png" class="responsive-img-article" style="flex: 1; max-width: 45%;">
+      </div>
+      <h2>Methodology</h2>
+      <p>
+        Our goal is to compare shot quality with a player on vs off the court, this can be done in a couple of ways.
+        First, by just computing what percentage of team shots are wide-open, open, contested, or heavily-contested when
+        that player is on the court then repeating the process for when the player is off the court and subtracting the
+        results. This provides a good baseline assessment of on/off team shot quality. Next we want to analyze impact on
+        the team, so we exclude shots that were taken by the player we are computing the statistic for. This helps
+        eliminate noise for players who take a lot of contested shots, and shows their impact on others.
+      </p>
+      <p>
+        Finally we want to examine jump shooting specifically since the large majority of attempts near the rim are
+        contested, and this trend will remain the same across all players. To this end, we exclude shots in zone one and
+        repeat the processes above. What we are left with is the percentage change in attempt% across each contest level
+        for all jump shots the players teammates took while they were on/off the court.
+      </p>
+      <h2>Results</h2>
+      <p>
+        Here are the resulting statistics, along with the differences in FG%, 2FG%, and 3FG% across the shots
+        considered. Since the attempt% numbers are a change in frequency of shots across contest levels, the differences
+        sum to zero. For privacy and competition's sake, I have anonymized the players' names. We interpret this data by
+        saying: when Player A was on the court, the proportion of his teammates' shots that were wide-open decreased by
+        3.54% and the proportion of shots that were heavily contested increased by 4.45%.
+      </p>
+      <iframe
+        src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRKmAN09Xw7gRg6FkYbk0WuCoIFmn3nV0vs4IpRdg_v3V4iotvNreJlzUGrpx8HWnuBloz2yGOxg3-X/pubhtml?gid=971620846&single=true"
+        width="850px" height="500px" style="border: none; display: block; padding: 0; margin: 0;"></iframe>
+      <br>
+
+      <p>
+        -Nick
+      </p>
+    </div>
+  </main>
+</body>
+
+</html>
